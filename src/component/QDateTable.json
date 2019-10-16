@@ -1,0 +1,40 @@
+{
+  "type": "component",
+  "props": {
+    "dateOptions": {
+      "type": "Array",
+      "desc": "Date range options you want to appear in the table",
+      "examples": [
+        { "label": "2019.10.16 7:00-8:00", "isActive": true },
+        { "label": "2019.10.16 9:00-9:30", "isActive": false }
+      ]
+    },
+    "title": {
+      "type": "String",
+      "desc": "Title of the table",
+      "default": "Lehetséges időpontok kiválasztása"
+    },
+    "tableStyle": {
+      "type": "String",
+      "desc": "style of the table, you should at least specify a max height",
+      "default": "max-height:400px"
+    },
+    "notAvailableText": {
+      "type": "String",
+      "desc": "Floating badge shown on rows that has isActive = false",
+      "default": "Nem elérhető",
+      "examples": ["Not available", "This row is not available"]
+    },
+    "columnLabel": {
+      "type": "String",
+      "desc": "Label of the column",
+      "default": "Időpont",
+      "examples": ["Time ranges", "Time", "Appointments"]
+    }
+  },
+  "events": {
+    "selection": {
+      "desc": "Emits the selected value"
+    }
+  }
+}
