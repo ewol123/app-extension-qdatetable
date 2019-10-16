@@ -30,11 +30,11 @@ Can be found [here](https://github.com/ewol123/app-extension-qdatetable/).
 
 # Docs
 
-Can be found [here](https://ewol123.github.io/app-extension-qdatetable/).
+Can be found [here](https://qdatetable.now.sh).
 
 # Examples
 
-Can be found [here](https://ewol123.github.io/app-extension-qdatetable/examples).
+Can be found [here](https://qdatetable.now.sh).
 
 # Demo (source) Project
 

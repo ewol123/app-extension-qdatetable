@@ -13,7 +13,7 @@
     "url": "https://github.com/ewol123/app-extension-qdatetable"
   },
   "bugs": "https://github.com/ewol123/app-extension-qdatetable/issues",
-  "homepage": "https://qdatetable.now.sh",
+  "homepage": "https://github.com/ewol123/app-extension-qdatetable",
   "engines": {
     "node": ">= 8.9.0",
     "npm": ">= 5.6.0",
