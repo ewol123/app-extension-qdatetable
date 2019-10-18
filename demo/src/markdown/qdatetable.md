@@ -1,7 +1,7 @@
 QDatetable (datetable)
 ===
 
-QDatetable is a [Quasar App Extension](https://quasar.dev/app-extensions/introduction). It allows you to display date ranges in a [QTable](https://quasar.dev/vue-components/table#QTable-API) and pick one of them.
+QDatetable is a [Quasar App Extension](https://quasar.dev/app-extensions/introduction). It allows you to display time ranges in a timetable like manner and pick one of them.
 You can also indicate inactive / disabled dates
 
 # Install
@@ -34,7 +34,7 @@ Can be found [here](https://qdatetable.now.sh).
 
 # Examples
 
-Can be found [here](https://qdatetable.now.sh).
+Can be found [here](https://qdatetable.now.sh/example).
 
 # Demo (source) Project
 
