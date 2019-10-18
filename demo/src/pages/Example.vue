@@ -1,26 +1,25 @@
 <template>
   <q-page padding>
-  
     <h6>Default mode</h6>
-    <datetable :date-options="allowedDates" @selection="selected = $event" ></datetable>
+    <q-datetable :date-options="allowedDates" @selection="selected = $event" ></q-datetable>
     <p class="text-weight-bold">{{selected}}</p>
 
     <h6>With header</h6>
-     <datetable :date-options="allowedDates" @selection="selected = $event" header ></datetable>
+     <q-datetable :date-options="allowedDates" @selection="selected = $event" header ></q-datetable>
     <p class="text-weight-bold">{{selected}}</p>
 
     <h6>Small chip mode</h6>
-       <datetable :date-options="allowedDates" @selection="selected = $event" small-chip></datetable>
+       <q-datetable :date-options="allowedDates" @selection="selected = $event" small-chip></q-datetable>
     <p class="text-weight-bold">{{selected}}</p>
 
     <h6>No chip mode, useful for smaller screens</h6>
 
-          <datetable :date-options="allowedDates" @selection="selected = $event" no-chip date-class="text-weight-bold"></datetable>
+          <q-datetable :date-options="allowedDates" @selection="selected = $event" no-chip date-class="text-weight-bold"></q-datetable>
     <p class="text-weight-bold">{{selected}}</p>
 
   <h6>Customized mode</h6>
 
-    <datetable 
+    <q-datetable 
       :date-options="allowedDatesFull" 
       @selection="selected = $event"
       title="Selectable dates"
@@ -37,7 +36,7 @@
       tbl-header-color="text-white"
       header
       help-msg="Pick a date!"
-      small-chip></datetable>
+      small-chip></q-datetable>
     
     <p class="text-weight-bold">{{selected}}</p>
 
@@ -45,11 +44,7 @@
 </template>
 
 <script>
-import datetable from "../components/QDateTable";
 export default {
-  components: {
-    datetable
-  },
   data() {
     return {
       selected: null,
