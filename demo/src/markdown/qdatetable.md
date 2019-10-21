@@ -34,7 +34,7 @@ Can be found [here](https://qdatetable.now.sh).
 
 # Examples
 
-Can be found [here](https://qdatetable.now.sh/example).
+Can be found [here](https://qdatetable.now.sh/#/example).
 
 # Demo (source) Project
 

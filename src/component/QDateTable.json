@@ -3,10 +3,14 @@
   "props": {
     "dateOptions": {
       "type": "Array",
-      "desc": "Date range options you want to appear in the table",
+      "desc": "Date range options you want to appear in the table. Hours are paired together near each other to form a range, so you should order them incrementally. You can get a so called list with ex.: later.js",
       "examples": [
-        { "label": "2019.10.16 7:00-8:00", "isActive": true },
-        { "label": "2019.10.16 9:00-9:30", "isActive": false }
+        { "label": "Thu Oct 24 2019 14:00:00 GMT+0200", "isEnabled": true },
+        { "label": "Thu Oct 24 2019 14:30:00 GMT+0200", "isEnabled": true },
+        { "label": "Thu Oct 24 2019 15:00:00 GMT+0200", "isEnabled": true },
+        { "label": "Thu Oct 24 2019 15:30:00 GMT+0200", "isEnabled": true },
+        { "label": "Fri Oct 25 2019 09:00:00 GMT+0200", "isEnabled": true },
+        { "label": "Fri Oct 25 2019 09:30:00 GMT+0200", "isEnabled": false }
       ]
     },
     "title": {
@@ -14,10 +18,16 @@
       "desc": "Title of the table",
       "default": "Lehetséges időpontok kiválasztása"
     },
-    "tableStyle": {
+    "titleClass": {
       "type": "String",
-      "desc": "style of the table, you should at least specify a max height",
-      "default": "max-height:400px"
+      "desc": "Class of the header text when not using QHeader",
+      "default": "text-h6 q-pa-sm"
+    },
+    "lang":{
+      "type": "String",
+      "desc": "Language type. 'hu' or en' ",
+      "default": "en",
+      "examples": ["hu", "en"]
     },
     "notAvailableText": {
       "type": "String",
@@ -25,11 +35,73 @@
       "default": "Nem elérhető",
       "examples": ["Not available", "This row is not available"]
     },
-    "columnLabel": {
-      "type": "String",
-      "desc": "Label of the column",
-      "default": "Időpont",
-      "examples": ["Time ranges", "Time", "Appointments"]
+    "chipEnabledColor":{
+      "type":"String",
+      "desc": "The color of the chip when the date is enabled. can be a quasar color, or hex",
+      "default": "teal",
+      "examples": ["teal","red", "#388e3c"]
+    },
+    "chipDisabledColor":{
+      "type":"String",
+      "desc": "The color of the chip when the date is disabled. can be a quasar color, or hex",
+      "default": "teal",
+      "examples": ["teal","red", "#388e3c"]
+    },
+    "dateClass":{
+      "type":"String",
+      "desc":"The QChip class holding the dates",
+      "default":"text-weight-bold text-white"
+    },
+    "selectedClass":{
+      "type":"String",
+      "desc":"Class of QItem when the date is selected",
+      "default":"bg-green-6"
+    },
+    "tblHeaderColor":{
+      "type":"String",
+      "desc":"The text color of the table header. All quasar colors work",
+      "default": "",
+      "examples": ["text-white", "text-green-7"]
+    },
+    "listDark":{
+      "type":"Boolean",
+      "desc":"Specifies dark theme for the QList",
+      "default": false
+    },
+    "smallChip":{
+      "type":"Boolean",
+      "desc":"If true, then QChip wont take up a whole row",
+      "default":false
+    },
+    "centerChip":{
+      "type":"Boolean",
+      "desc":"If true, the QChip will be centered",
+      "default":false
+    },
+    "noChip":{
+      "type": "Boolean",
+      "desc":"If true, no chip will be rendered, just a simple text",
+      "default":false
+    },
+    "header":{
+      "type":"Boolean",
+      "desc":"If true, the table will have a QHeader",
+      "default":false
+    },
+    "tableHeight":{
+      "type":"Number",
+      "desc":"The height of the table",
+      "default":400
+    },
+    "tableClass":{
+      "type":"String",
+      "desc":"The class for the uppermost container",
+      "default":"shadow-2 rounded-borders"
+    },
+    "helpMsg":{
+      "type":"String",
+      "desc":"If you are using a header, this message will be displayed when the user hovers over the question mark",
+      "default": "Click on desired date"
     }
   },
   "events": {
