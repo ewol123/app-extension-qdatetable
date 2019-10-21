@@ -19,7 +19,7 @@
 
         <div class="row justify-between text-grey-7">
           <template v-for="day in Object.keys(dates)">
-            <div class="col q-pt-sm" :key="day" v-if="dates[day].length">
+            <div :class="$q.screen.lt.md ? 'col-12 q-pt-sm text-center' : 'col q-pt-sm'" :key="day" v-if="dates[day].length">
               <span :class="`text-caption col-auto q-ml-sm ${tblHeaderColor}`">{{findDayById(day)}}</span>
 
               <q-list bordered :dark="listDark" separator class="q-mt-sm">
@@ -85,17 +85,9 @@ export default {
       type: String,
       default: "text-h6 q-pa-sm"
     },
-    cardClass: {
-      type: String,
-      default: "q-mt-lg"
-    },
     notAvailableText: {
       type: String,
       default: "Not available"
-    },
-    badgeColor: {
-      type: String,
-      default: "blue"
     },
     lang: {
       type: String,
@@ -248,7 +240,6 @@ export default {
   },
   data() {
     return {
-      parsedDates: [],
       selected: [],
       daysMap: {
         1: { id: "mon", label: { hu: "Hétfő", en: "Monday" } },
@@ -258,9 +249,6 @@ export default {
         5: { id: "fri", label: { hu: "Péntek", en: "Friday" } },
         6: { id: "sat", label: { hu: "Szombat", en: "Saturday" } },
         7: { id: "sun", label: { hu: "Vasárnap", en: "Sunday" } }
-      },
-      pagination: {
-        rowsPerPage: 0
       },
       columns: [],
       dates: []
