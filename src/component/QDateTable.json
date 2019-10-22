@@ -114,8 +114,22 @@
       "type": "String",
       "desc": "Next week button label",
       "default": "Next week"
+    },
+    "weekThreshold": {
+      "type": "Number",
+      "desc": "Threshold in weeks which the component should check for when deciding if prev and next week is allowed",
+      "default": 6
+    },
+    "dense": {
+      "type": "Boolean",
+      "desc": "Qtable dense mode",
+      "default": false
+    },
+    "separator": {
+      "type": "String",
+      "desc": "separator mode for QTable. horizontal, vertical, cell, or none",
+      "default": "cell"
     }
-    
   },
   "events": {
     "selection": {

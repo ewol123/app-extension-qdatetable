@@ -1,5 +1,7 @@
 <template>
   <q-table
+    :dense="dense"
+    :separator="separator"
     :color="color"
     :card-class="cardClass"
     :table-class="tableClass"
@@ -64,17 +66,18 @@
       ></q-td>
     </q-tr>
 
-    <div slot="bottom" class="full-width justify-between row">
-      <q-btn
+    <div slot="bottom" class="full-width">
+      <div class="justify-between row">
+             <q-btn
         :disable="!hasPreviousWeek"
-        :label="prevWeekLabel"
+        :label="`${$q.screen.lt.sm ? '' : prevWeekLabel}`"
         icon="fas fa-chevron-left"
         flat
         size="md"
         @click="setPage(false)"
       ></q-btn>
       <q-chip
-        v-if="selected.length"
+        v-if="selected.length && $q.screen.gt.xs"
         v-model="selectedDate"
         :label="formatLabel()"
         :style="selectedChipStyle"
@@ -83,12 +86,24 @@
       />
       <q-btn
         :disable="!hasNextWeek"
-        :label="nextWeekLabel"
+        :label="`${$q.screen.lt.sm ? '' : nextWeekLabel}`"
         icon-right="fas fa-chevron-right"
         flat
         size="md"
         @click="setPage(true)"
       ></q-btn>
+      </div>
+      <div v-if="$q.screen.lt.sm" class="row">
+         <q-chip
+        v-if="selected.length"
+        v-model="selectedDate"
+        :label="formatLabel()"
+        :style="selectedChipStyle"
+        :class="selectedChipClass"
+        removable
+      />
+      </div>
+ 
     </div>
   </q-table>
 </template>
@@ -176,6 +191,19 @@ export default {
     nextWeekLabel: {
       type: String,
       default: "Next week"
+    },
+    weekThreshold: {
+      type: Number,
+      default: 6
+    },
+    dense: {
+      type: Boolean,
+      default: false
+    },
+    separator: {
+      type: String,
+      default: "cell",
+      validator: val => ["horizontal", "vertical", "cell", "none"].includes(val),
     }
   },
   data() {
@@ -264,19 +292,25 @@ export default {
       };
     },
     hasNextWeek() {
+
       let hasNext = false;
       this.activeDates.forEach(date => {
         const currentWeek = this.currentWeek;
-        const startOfWeek = moment(currentWeek.startOfWeek)
-          .add(1, "week")
+ 
+        for (let i = 0; i < this.weekThreshold; i++) {
+           const weekAccumulator = i + 1;
+           const startOfWeek = moment(currentWeek.startOfWeek)
+          .add(weekAccumulator, "week")
           .format("YYYY/MM/DD");
         const endOfWeek = moment(currentWeek.endOfWeek)
-          .add(1, "week")
+          .add(weekAccumulator, "week")
           .format("YYYY/MM/DD");
 
-        if (moment(date.dateFrom).isBetween(startOfWeek, endOfWeek)) {
+           if (moment(date.dateFrom).isBetween(startOfWeek, endOfWeek)) {
+
           hasNext = true;
           return hasNext;
+        }
         }
       });
       return hasNext;
@@ -285,16 +319,20 @@ export default {
       let hasNext = false;
       this.activeDates.forEach(date => {
         const currentWeek = this.currentWeek;
-        const startOfWeek = moment(currentWeek.startOfWeek)
-          .subtract(1, "week")
+
+      for (let i = 0; i < this.weekThreshold; i++) {
+           const weekAccumulator = i + 1;
+           const startOfWeek = moment(currentWeek.startOfWeek)
+          .subtract(weekAccumulator, "week")
           .format("YYYY/MM/DD");
         const endOfWeek = moment(currentWeek.endOfWeek)
-          .subtract(1, "week")
+          .subtract(weekAccumulator, "week")
           .format("YYYY/MM/DD");
 
         if (moment(date.dateFrom).isBetween(startOfWeek, endOfWeek)) {
           hasNext = true;
           return hasNext;
+        }
         }
       });
       return hasNext;
