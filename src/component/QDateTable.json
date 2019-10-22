@@ -3,37 +3,17 @@
   "props": {
     "hours": {
       "type": "Array",
-      "desc": "Displayed hour options you want to appear in the table. on the left-most side under Time column",
-      "examples": [
-      {"dateFrom":"2019-10-22T08:00:00.000Z", "dateTo": "2019-10-22T08:30:00.000Z"}, 
-      {"dateFrom": "2019-10-22T08:30:00.000Z", "dateTo": "2019-10-22T09:00:00.000Z"},
-      {"dateFrom":"2019-10-22T09:00:00.000Z", "dateTo": "2019-10-22T09:30:00.000Z"}, 
-      {"dateFrom": "2019-10-22T09:30:00.000Z", "dateTo": "2019-10-22T10:00:00.000Z"},
-      {"dateFrom":"2019-10-22T10:00:00.000Z", "dateTo": "2019-10-22T10:30:00.000Z"}, 
-      {"dateFrom": "2019-10-22T10:30:00.000Z", "dateTo": "2019-10-22T11:00:00.000Z"},
-      {"dateFrom":"2019-10-22T11:00:00.000Z", "dateTo": "2019-10-22T11:30:00.000Z"}, 
-      {"dateFrom": "2019-10-22T11:30:00.000Z", "dateTo": "2019-10-22T12:00:00.000Z"}]
+      "desc": "Displayed hour options you want to appear in the table, on the leftmost side under time column. Must be an array of objects with the following structure. Month does not matter, only hours are parsed from the array",
+      "examples": [[
+      "{dateFrom:2019-10-22T08:00:00.000Z, dateTo: 2019-10-22T08:30:00.000Z}"
+      ]]
     },
     "activeDates": {
       "type": "Array",
-      "desc": "Active date options you want to be selectable.",
+      "desc": "Active date options you want to be selectable. Must be an array of objects with the following structure",
       "examples": [
-        {"dateFrom":"2019-10-22T08:00:00.000Z", "dateTo": "2019-10-22T08:30:00.000Z"}, 
-        {"dateFrom":"2019-10-22T08:30:00.000Z", "dateTo": "2019-10-22T09:00:00.000Z"}, 
-        {"dateFrom":"2019-10-22T09:00:00.000Z", "dateTo": "2019-10-22T09:30:00.000Z"}, 
-        {"dateFrom": "2019-10-22T09:30:00.000Z", "dateTo": "2019-10-22T10:00:00.000Z"},
-        {"dateFrom":"2019-10-22T10:00:00.000Z", "dateTo": "2019-10-22T10:30:00.000Z"}, 
-        {"dateFrom": "2019-10-22T10:30:00.000Z", "dateTo": "2019-10-22T11:00:00.000Z"},
-        {"dateFrom": "2019-10-22T11:00:00.000Z", "dateTo": "2019-10-22T11:30:00.000Z"},
-        {"dateFrom": "2019-10-22T11:30:00.000Z", "dateTo": "2019-10-22T12:00:00.000Z"},
-        {"dateFrom":"2019-10-23T08:00:00.000Z", "dateTo": "2019-10-23T08:30:00.000Z"}, 
-        {"dateFrom":"2019-10-23T08:30:00.000Z", "dateTo": "2019-10-23T09:00:00.000Z"}, 
-        {"dateFrom": "2019-10-23T09:30:00.000Z", "dateTo": "2019-10-23T10:00:00.000Z"},
-        {"dateFrom":"2019-10-23T10:00:00.000Z", "dateTo": "2019-10-23T10:30:00.000Z"}, 
-        {"dateFrom": "2019-10-23T10:30:00.000Z", "dateTo": "2019-10-23T11:00:00.000Z"},
-        {"dateFrom": "2019-10-23T11:00:00.000Z", "dateTo": "2019-10-23T11:30:00.000Z"},
-        {"dateFrom": "2019-10-23T11:30:00.000Z", "dateTo": "2019-10-23T12:00:00.000Z"},
-        {"dateFrom": "2019-10-28T10:30:00.000Z", "dateTo": "2019-10-28T11:00:00.000Z"}]
+       [ "{dateFrom:2019-10-22T08:00:00.000Z, dateTo: 2019-10-22T08:30:00.000Z}" ]
+    ]
     },
     "title": {
       "type": "String",
@@ -62,7 +42,8 @@
     },
     "lang": {
       "type": "String",
-      "desc": "default displayed language for days, header. 'en' or 'hu'",
+      "desc": "default displayed language for days, header",
+      "values": [ "en", "hu" ],
       "default": "en"
     },
     "activeClass": {
@@ -127,7 +108,8 @@
     },
     "separator": {
       "type": "String",
-      "desc": "separator mode for QTable. horizontal, vertical, cell, or none",
+      "desc": "separator mode for QTable",
+      "values": ["vertical", "horizontal", "cell", "none"],
       "default": "cell"
     }
   },

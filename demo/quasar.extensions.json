@@ -1,4 +1,6 @@
 {
   "@quasar/qmarkdown": {},
-  "qdatetable": {}
+  "qdatetable": {},
+  "@quasar/qpublish": {},
+  "qribbon": {}
 }
