@@ -1,5 +1,6 @@
 <template>
   <q-table
+    :loading="loading"
     :dense="dense"
     :separator="separator"
     :color="color"
@@ -16,9 +17,11 @@
     virtual-scroll
   >
     <q-tr slot="body" slot-scope="props" :props="props">
-      <q-td key="time" :props="props" :style="timeStyle" :class="timeClass">{{
+      <q-td key="time" :props="props" :style="timeStyle" :class="timeClass">
+        {{
         props.row.time.label
-      }}</q-td>
+        }}
+      </q-td>
 
       <q-td
         key="mon"
@@ -68,42 +71,41 @@
 
     <div slot="bottom" class="full-width">
       <div class="justify-between row">
-             <q-btn
-        :disable="!hasPreviousWeek"
-        :label="`${$q.screen.lt.sm ? '' : prevWeekLabel}`"
-        icon="fas fa-chevron-left"
-        flat
-        size="md"
-        @click="setPage(false)"
-      ></q-btn>
-      <q-chip
-        v-if="selected.length && $q.screen.gt.xs"
-        v-model="selectedDate"
-        :label="formatLabel()"
-        :style="selectedChipStyle"
-        :class="selectedChipClass"
-        removable
-      />
-      <q-btn
-        :disable="!hasNextWeek"
-        :label="`${$q.screen.lt.sm ? '' : nextWeekLabel}`"
-        icon-right="fas fa-chevron-right"
-        flat
-        size="md"
-        @click="setPage(true)"
-      ></q-btn>
+        <q-btn
+          :disable="!hasPreviousWeek"
+          :label="`${$q.screen.lt.sm ? '' : prevWeekLabel}`"
+          icon="fas fa-chevron-left"
+          flat
+          size="md"
+          @click="setPage(false)"
+        ></q-btn>
+        <q-chip
+          v-if="selected.length && $q.screen.gt.xs"
+          v-model="selectedDate"
+          :label="formatLabel()"
+          :style="selectedChipStyle"
+          :class="selectedChipClass"
+          removable
+        />
+        <q-btn
+          :disable="!hasNextWeek"
+          :label="`${$q.screen.lt.sm ? '' : nextWeekLabel}`"
+          icon-right="fas fa-chevron-right"
+          flat
+          size="md"
+          @click="setPage(true)"
+        ></q-btn>
       </div>
       <div v-if="$q.screen.lt.sm" class="row">
-         <q-chip
-        v-if="selected.length"
-        v-model="selectedDate"
-        :label="formatLabel()"
-        :style="selectedChipStyle"
-        :class="selectedChipClass"
-        removable
-      />
+        <q-chip
+          v-if="selected.length"
+          v-model="selectedDate"
+          :label="formatLabel()"
+          :style="selectedChipStyle"
+          :class="selectedChipClass"
+          removable
+        />
       </div>
- 
     </div>
   </q-table>
 </template>
@@ -203,11 +205,12 @@ export default {
     separator: {
       type: String,
       default: "cell",
-      validator: val => ["horizontal", "vertical", "cell", "none"].includes(val),
+      validator: val => ["horizontal", "vertical", "cell", "none"].includes(val)
     }
   },
   data() {
     return {
+      loading: false,
       selectedDate: true,
       page: 0,
       pagination: {
@@ -278,11 +281,11 @@ export default {
   },
   computed: {
     currentWeek() {
-      const startOfWeek = moment()
+      const startOfWeek = moment.utc()
         .startOf("isoWeek")
         .add(this.page, "week")
         .format("YYYY/MM/DD");
-      const endOfWeek = moment()
+      const endOfWeek = moment.utc()
         .endOf("isoWeek")
         .add(this.page, "week")
         .format("YYYY/MM/DD");
@@ -292,50 +295,18 @@ export default {
       };
     },
     hasNextWeek() {
-
-      let hasNext = false;
-      this.activeDates.forEach(date => {
-        const currentWeek = this.currentWeek;
- 
-        for (let i = 0; i < this.weekThreshold; i++) {
-           const weekAccumulator = i + 1;
-           const startOfWeek = moment(currentWeek.startOfWeek)
-          .add(weekAccumulator, "week")
-          .format("YYYY/MM/DD");
-        const endOfWeek = moment(currentWeek.endOfWeek)
-          .add(weekAccumulator, "week")
-          .format("YYYY/MM/DD");
-
-           if (moment(date.dateFrom).isBetween(startOfWeek, endOfWeek)) {
-
-          hasNext = true;
-          return hasNext;
-        }
-        }
-      });
-      return hasNext;
+      let dates = this.activeDates.map(date => moment.utc(date.dateTo));
+      const maxDate = moment.max(dates);
+      const endOfWeek = this.currentWeek.endOfWeek;
+      const isAfter = moment.utc(endOfWeek).isAfter(maxDate);
+      return !isAfter;
     },
     hasPreviousWeek() {
-      let hasNext = false;
-      this.activeDates.forEach(date => {
-        const currentWeek = this.currentWeek;
-
-      for (let i = 0; i < this.weekThreshold; i++) {
-           const weekAccumulator = i + 1;
-           const startOfWeek = moment(currentWeek.startOfWeek)
-          .subtract(weekAccumulator, "week")
-          .format("YYYY/MM/DD");
-        const endOfWeek = moment(currentWeek.endOfWeek)
-          .subtract(weekAccumulator, "week")
-          .format("YYYY/MM/DD");
-
-        if (moment(date.dateFrom).isBetween(startOfWeek, endOfWeek)) {
-          hasNext = true;
-          return hasNext;
-        }
-        }
-      });
-      return hasNext;
+      let dates = this.activeDates.map(date => moment.utc(date.dateFrom));
+      const minDate = moment.min(dates);
+      const startOfWeek = this.currentWeek.startOfWeek;
+      const isBefore = moment.utc(startOfWeek).isBefore(minDate);
+      return !isBefore;
     }
   },
   watch: {
@@ -354,7 +325,7 @@ export default {
     this.hours.forEach(hour => {
       this.data.push({
         time: {
-          label: `${moment(hour.dateFrom).format("HH:mm")} - ${moment(
+          label: `${moment.utc(hour.dateFrom).format("HH:mm")} - ${moment.utc(
             hour.dateTo
           ).format("HH:mm")}`,
           dateFrom: hour.dateFrom,
@@ -377,9 +348,9 @@ export default {
       const dateFrom = this.selected[0].time.dateFrom;
       const dateTo = this.selected[0].time.dateTo;
       return `
-      ${moment(dateFrom).format("YYYY/MM/DD")} 
-      ${moment(dateFrom).format("HH:mm")} - ${moment(dateTo).format("HH:mm")} 
-      ${this.daysMap[moment(dateFrom).isoWeekday()].label[this.lang]}`;
+      ${moment.utc(dateFrom).format("YYYY/MM/DD")} 
+      ${moment.utc(dateFrom).format("HH:mm")} - ${moment.utc(dateTo).format("HH:mm")} 
+      ${this.daysMap[moment.utc(dateFrom).isoWeekday()].label[this.lang]}`;
     },
     setPage(increment) {
       if (increment) {
@@ -388,6 +359,7 @@ export default {
       this.setPossibleArrivalDates();
     },
     setPossibleArrivalDates() {
+      this.loading = true;
       this.data.forEach(el => {
         const dateFrom = el.time.dateFrom;
         const dateTo = el.time.dateTo;
@@ -396,13 +368,13 @@ export default {
           this.$set(el, this.daysMap[day].id, false);
           const matchedDate = this.activeDates.find(date => {
             if (
-              moment(dateFrom).format("HH:mm") ===
-                moment(date.dateFrom).format("HH:mm") &&
-              moment(dateTo).format("HH:mm") ===
-                moment(date.dateTo).format("HH:mm") &&
-              this.daysMap[moment(date.dateFrom).isoWeekday()].id ===
+              moment.utc(dateFrom).format("HH:mm") ===
+                moment.utc(date.dateFrom).format("HH:mm") &&
+              moment.utc(dateTo).format("HH:mm") ===
+                moment.utc(date.dateTo).format("HH:mm") &&
+              this.daysMap[moment.utc(date.dateFrom).isoWeekday()].id ===
                 this.daysMap[day].id &&
-              moment(date.dateFrom).isBetween(
+              moment.utc(date.dateFrom).isBetween(
                 this.currentWeek.startOfWeek,
                 this.currentWeek.endOfWeek
               )
@@ -419,6 +391,7 @@ export default {
           }
         });
       });
+      this.loading = false;
     },
     pushSelected(row) {
       if (!row.isEnabled) return;
