@@ -70,9 +70,3 @@ export default {
   }
 };
 </script>
-
-<style >
-.card-bg {
-  background: radial-gradient(circle, #2272b8 0%, #00b9de 100%);
-}
-</style>

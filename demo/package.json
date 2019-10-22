@@ -1,6 +1,6 @@
 {
   "name": "test-app",
-  "version": "0.0.2",
+  "version": "1.0.0",
   "description": "test app for qdatetable",
   "productName": "Quasar App",
   "cordovaId": "",
@@ -25,7 +25,7 @@
     "eslint": "^5.10.0",
     "eslint-loader": "^2.1.1",
     "eslint-plugin-vue": "^5.0.0",
-    "quasar-app-extension-qdatetable": "^0.2.1"
+    "quasar-app-extension-qdatetable": "^0.3.0"
   },
   "engines": {
     "node": ">= 8.9.0",
