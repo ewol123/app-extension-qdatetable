@@ -1,6 +1,6 @@
 {
   "name": "app-extension-qdatetable",
-  "version": 1,
+  "version": 2,
   "routes": [
     { "handle": "filesystem" },
     { "src": "/.*", "dest": "/index.html" }
