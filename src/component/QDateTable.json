@@ -1,108 +1,122 @@
 {
   "type": "component",
   "props": {
-    "dateOptions": {
+    "hours": {
       "type": "Array",
-      "desc": "Date range options you want to appear in the table. Hours are paired together near each other to form a range, so you should order them incrementally. You can get a so called list with ex.: later.js",
+      "desc": "Displayed hour options you want to appear in the table. on the left-most side under Time column",
       "examples": [
-        { "label": "Thu Oct 24 2019 14:00:00 GMT+0200", "isEnabled": true },
-        { "label": "Thu Oct 24 2019 14:30:00 GMT+0200", "isEnabled": true },
-        { "label": "Thu Oct 24 2019 15:00:00 GMT+0200", "isEnabled": true },
-        { "label": "Thu Oct 24 2019 15:30:00 GMT+0200", "isEnabled": true },
-        { "label": "Fri Oct 25 2019 09:00:00 GMT+0200", "isEnabled": true },
-        { "label": "Fri Oct 25 2019 09:30:00 GMT+0200", "isEnabled": false }
+      {"dateFrom":"2019-10-22T08:00:00.000Z", "dateTo": "2019-10-22T08:30:00.000Z"}, 
+      {"dateFrom": "2019-10-22T08:30:00.000Z", "dateTo": "2019-10-22T09:00:00.000Z"},
+      {"dateFrom":"2019-10-22T09:00:00.000Z", "dateTo": "2019-10-22T09:30:00.000Z"}, 
+      {"dateFrom": "2019-10-22T09:30:00.000Z", "dateTo": "2019-10-22T10:00:00.000Z"},
+      {"dateFrom":"2019-10-22T10:00:00.000Z", "dateTo": "2019-10-22T10:30:00.000Z"}, 
+      {"dateFrom": "2019-10-22T10:30:00.000Z", "dateTo": "2019-10-22T11:00:00.000Z"},
+      {"dateFrom":"2019-10-22T11:00:00.000Z", "dateTo": "2019-10-22T11:30:00.000Z"}, 
+      {"dateFrom": "2019-10-22T11:30:00.000Z", "dateTo": "2019-10-22T12:00:00.000Z"}]
+    },
+    "activeDates": {
+      "type": "Array",
+      "desc": "Active date options you want to be selectable.",
+      "examples": [
+        {"dateFrom":"2019-10-22T08:00:00.000Z", "dateTo": "2019-10-22T08:30:00.000Z"}, 
+        {"dateFrom":"2019-10-22T08:30:00.000Z", "dateTo": "2019-10-22T09:00:00.000Z"}, 
+        {"dateFrom":"2019-10-22T09:00:00.000Z", "dateTo": "2019-10-22T09:30:00.000Z"}, 
+        {"dateFrom": "2019-10-22T09:30:00.000Z", "dateTo": "2019-10-22T10:00:00.000Z"},
+        {"dateFrom":"2019-10-22T10:00:00.000Z", "dateTo": "2019-10-22T10:30:00.000Z"}, 
+        {"dateFrom": "2019-10-22T10:30:00.000Z", "dateTo": "2019-10-22T11:00:00.000Z"},
+        {"dateFrom": "2019-10-22T11:00:00.000Z", "dateTo": "2019-10-22T11:30:00.000Z"},
+        {"dateFrom": "2019-10-22T11:30:00.000Z", "dateTo": "2019-10-22T12:00:00.000Z"},
+        {"dateFrom":"2019-10-23T08:00:00.000Z", "dateTo": "2019-10-23T08:30:00.000Z"}, 
+        {"dateFrom":"2019-10-23T08:30:00.000Z", "dateTo": "2019-10-23T09:00:00.000Z"}, 
+        {"dateFrom": "2019-10-23T09:30:00.000Z", "dateTo": "2019-10-23T10:00:00.000Z"},
+        {"dateFrom":"2019-10-23T10:00:00.000Z", "dateTo": "2019-10-23T10:30:00.000Z"}, 
+        {"dateFrom": "2019-10-23T10:30:00.000Z", "dateTo": "2019-10-23T11:00:00.000Z"},
+        {"dateFrom": "2019-10-23T11:00:00.000Z", "dateTo": "2019-10-23T11:30:00.000Z"},
+        {"dateFrom": "2019-10-23T11:30:00.000Z", "dateTo": "2019-10-23T12:00:00.000Z"},
+        {"dateFrom": "2019-10-28T10:30:00.000Z", "dateTo": "2019-10-28T11:00:00.000Z"},
       ]
     },
     "title": {
       "type": "String",
       "desc": "Title of the table",
-      "default": "Lehetséges időpontok kiválasztása"
+      "default": "Allowed Dates"
     },
-    "titleClass": {
+     "color": {
       "type": "String",
-      "desc": "Class of the header text when not using QHeader",
-      "default": "text-h6 q-pa-sm"
+      "desc": "Qtable color property",
+      "default": ""
     },
-    "lang":{
+    "cardClass": {
       "type": "String",
-      "desc": "Language type. 'hu' or en' ",
-      "default": "en",
-      "examples": ["hu", "en"]
+      "desc": "QTable card class",
+      "default": ""
     },
-    "notAvailableText": {
+    "tableClass": {
       "type": "String",
-      "desc": "Floating badge shown on rows that has isActive = false",
-      "default": "Nem elérhető",
-      "examples": ["Not available", "This row is not available"]
+      "desc": "QTable table-class",
+      "default": ""
     },
-    "chipEnabledColor":{
-      "type":"String",
-      "desc": "The color of the chip when the date is enabled. can be a quasar color, or hex",
-      "default": "teal",
-      "examples": ["teal","red", "#388e3c"]
+    "tableHeaderClass": {
+      "type": "String",
+      "desc": "Qtable table-header-class",
+      "default": ""
     },
-    "chipDisabledColor":{
-      "type":"String",
-      "desc": "The color of the chip when the date is disabled. can be a quasar color, or hex",
-      "default": "teal",
-      "examples": ["teal","red", "#388e3c"]
+    "lang": {
+      "type": "String",
+      "desc": "default displayed language for days, header. 'en' or 'hu'",
+      "default": "en"
     },
-    "dateClass":{
-      "type":"String",
-      "desc":"The QChip class holding the dates",
-      "default":"text-weight-bold text-white"
+    "activeClass": {
+      "type": "String",
+      "desc": "class for active date cells",
+      "default": "bg-green"
     },
-    "selectedClass":{
-      "type":"String",
-      "desc":"Class of QItem when the date is selected",
-      "default":"bg-green-6"
+    "selectedClass": {
+      "type": "String",
+      "desc": "class for selected date cell",
+      "default": "cursor-pointer bg-green-8"
     },
-    "tblHeaderColor":{
-      "type":"String",
-      "desc":"The text color of the table header. All quasar colors work",
-      "default": "",
-      "examples": ["text-white", "text-green-7"]
+    "disabledClass": {
+      "type": "String",
+      "desc": "class for displayed but inactive date cells",
+      "default": "bg-grey-4"
     },
-    "listDark":{
-      "type":"Boolean",
-      "desc":"Specifies dark theme for the QList",
-      "default": false
+    "tableHeight": {
+      "type": "Number",
+      "desc": "the height of the table",
+      "default": 400
     },
-    "smallChip":{
-      "type":"Boolean",
-      "desc":"If true, then QChip wont take up a whole row",
-      "default":false
+    "timeStyle": {
+      "type": "String",
+      "desc": "Style for the leftmost hours cells",
+      "default": "background-color: #00b9de"
     },
-    "centerChip":{
-      "type":"Boolean",
-      "desc":"If true, the QChip will be centered",
-      "default":false
+    "timeClass": {
+      "type": "String",
+      "desc": "Class for the leftmost hours cells",
+      "default": "text-weight-bold text-white"
     },
-    "noChip":{
-      "type": "Boolean",
-      "desc":"If true, no chip will be rendered, just a simple text",
-      "default":false
+    "selectedChipStyle": {
+      "type": "String",
+      "desc": "Selected date chip style",
+      "default": "background-color: #00b9de"
     },
-    "header":{
-      "type":"Boolean",
-      "desc":"If true, the table will have a QHeader",
-      "default":false
+    "selectedChipClass": {
+      "type": "String",
+      "desc": "Selected date chip class",
+      "default": "text-weight-bold text-white"
     },
-    "tableHeight":{
-      "type":"Number",
-      "desc":"The height of the table",
-      "default":400
+    "prevWeekLabel": {
+      "type": "String",
+      "desc": "Previous week button label",
+      "default": "Previous week"
     },
-    "tableClass":{
-      "type":"String",
-      "desc":"The class for the uppermost container",
-      "default":"shadow-2 rounded-borders"
-    },
-    "helpMsg":{
-      "type":"String",
-      "desc":"If you are using a header, this message will be displayed when the user hovers over the question mark",
-      "default": "Click on desired date"
+    "nextWeekLabel": {
+      "type": "String",
+      "desc": "Next week button label",
+      "default": "Next week"
     }
+    
   },
   "events": {
     "selection": {

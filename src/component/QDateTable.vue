@@ -1,77 +1,112 @@
 <template>
-  <q-layout view="lHh lpr lFf" container :style="`height: ${tableHeight}px`" :class="tableClass">
-    <q-header v-if="header" elevated>
-      <q-toolbar>
-        <q-icon name="fas fa-calendar-alt" size="20px"></q-icon>
-        <q-toolbar-title>{{title}}</q-toolbar-title>
+  <q-table
+    :color="color"
+    :card-class="cardClass"
+    :table-class="tableClass"
+    :table-header-class="tableHeaderClass"
+    :title="`${title} (${currentWeek.startOfWeek} - ${currentWeek.endOfWeek})`"
+    :data="data"
+    :columns="columns"
+    :table-style="`max-height: ${tableHeight}px`"
+    :pagination.sync="pagination"
+    :rows-per-page-options="[0]"
+    row-key="name"
+    virtual-scroll
+  >
+    <q-tr slot="body" slot-scope="props" :props="props">
+      <q-td key="time" :props="props" :style="timeStyle" :class="timeClass">{{
+        props.row.time.label
+      }}</q-td>
 
-        <q-btn flat round dense icon="fas fa-question">
-          <q-tooltip>
-            <span class="text-caption">{{helpMsg}}</span>
-          </q-tooltip>
-        </q-btn>
-      </q-toolbar>
-    </q-header>
+      <q-td
+        key="mon"
+        :props="props"
+        :class="itemClass(props.row.mon)"
+        @click.native="pushSelected(props.row.mon)"
+      ></q-td>
 
-    <q-page-container>
-      <q-page>
-        <div v-if="!header" :class="titleClass">{{title}}</div>
+      <q-td
+        key="tue"
+        :props="props"
+        :class="itemClass(props.row.tue)"
+        @click.native="pushSelected(props.row.tue)"
+      ></q-td>
 
-        <div class="row justify-between text-grey-7">
-          <template v-for="day in Object.keys(dates)">
-            <div :class="$q.screen.lt.md ? 'col-12 q-pt-sm text-center' : 'col q-pt-sm'" :key="day" v-if="dates[day].length">
-              <span :class="`text-caption col-auto q-ml-sm ${tblHeaderColor}`">{{findDayById(day)}}</span>
+      <q-td
+        key="wed"
+        :props="props"
+        :class="itemClass(props.row.wed)"
+        @click.native="pushSelected(props.row.wed)"
+      ></q-td>
+      <q-td
+        key="thu"
+        :props="props"
+        :class="itemClass(props.row.thu)"
+        @click.native="pushSelected(props.row.thu)"
+      ></q-td>
+      <q-td
+        key="fri"
+        :props="props"
+        :class="itemClass(props.row.fri)"
+        @click.native="pushSelected(props.row.fri)"
+      ></q-td>
+      <q-td
+        key="sat"
+        :props="props"
+        :class="itemClass(props.row.sat)"
+        @click.native="pushSelected(props.row.sat)"
+      ></q-td>
+      <q-td
+        key="sun"
+        :props="props"
+        :class="itemClass(props.row.sun)"
+        @click.native="pushSelected(props.row.sun)"
+      ></q-td>
+    </q-tr>
 
-              <q-list bordered :dark="listDark" separator class="q-mt-sm">
-                <q-item
-                  v-for="(date, index) in dates[day]"
-                  clickable
-                  ripple
-                  :key="index"
-                  :disabled="!date.isEnabled"
-                  :class="itemClass(date)"
-                  @click.native="pushSelected(date)"
-                >
-                  <q-item-section>
-                    <q-chip
-                      v-if="!smallChip && !noChip"
-                      :color="date.isEnabled ? chipEnabledColor: chipDisabledColor"
-                      :class="dateClass"
-                    >{{date.label}}</q-chip>
-                    <div
-                      v-if="smallChip && !noChip"
-                      :class="`row ${centerChip ? 'text-center' : ''}`"
-                    >
-                      <div class="col-12">
-                        <q-chip
-                          :color="date.isEnabled ? chipEnabledColor: chipDisabledColor"
-                          :class="dateClass"
-                        >{{date.label}}</q-chip>
-                      </div>
-                    </div>
-                    <span v-if="noChip" :class="dateClass">{{date.label}}</span>
-                  </q-item-section>
-                  <q-badge v-if="!date.isEnabled" floating class="q-mr-sm">{{notAvailableText}}</q-badge>
-                </q-item>
-              </q-list>
-            </div>
-          </template>
-        </div>
-      </q-page>
-    </q-page-container>
-  </q-layout>
+    <div slot="bottom" class="full-width justify-between row">
+      <q-btn
+        :disable="!hasPreviousWeek"
+        :label="prevWeekLabel"
+        icon="fas fa-chevron-left"
+        flat
+        size="md"
+        @click="setPage(false)"
+      ></q-btn>
+      <q-chip
+        v-if="selected.length"
+        v-model="selectedDate"
+        :label="formatLabel()"
+        :style="selectedChipStyle"
+        :class="selectedChipClass"
+        removable
+      />
+      <q-btn
+        :disable="!hasNextWeek"
+        :label="nextWeekLabel"
+        icon-right="fas fa-chevron-right"
+        flat
+        size="md"
+        @click="setPage(true)"
+      ></q-btn>
+    </div>
+  </q-table>
 </template>
 <script>
 import moment from "moment";
 export default {
   props: {
-    dateOptions: {
+    hours: {
+      type: Array,
+      default: () => []
+    },
+    activeDates: {
       type: Array,
       default: () => [],
       required: true,
       validator: values => {
         values.forEach(val => {
-          if ("label" in val === false || "isActive" in val === false)
+          if ("dateFrom" in val === false || "dateTo" in val === false)
             return false;
         });
         return true;
@@ -81,165 +116,75 @@ export default {
       type: String,
       default: "Allowed Dates"
     },
-    titleClass: {
+    color: {
       type: String,
-      default: "text-h6 q-pa-sm"
+      default: ""
     },
-    notAvailableText: {
+    cardClass: {
       type: String,
-      default: "Not available"
+      default: ""
+    },
+    tableClass: {
+      type: String,
+      default: ""
+    },
+    tableHeaderClass: {
+      type: String,
+      default: ""
     },
     lang: {
       type: String,
       validator: val => ["hu", "en"].includes(val.toLowerCase()),
       default: "en"
     },
-    chipEnabledColor: {
+    activeClass: {
       type: String,
-      default: "teal"
-    },
-    chipDisabledColor: {
-      type: String,
-      default: "red"
-    },
-    dateClass: {
-      type: String,
-      default: "text-weight-bold text-white"
+      default: "bg-green"
     },
     selectedClass: {
       type: String,
-      default: "bg-green-6"
+      default: "cursor-pointer bg-green-8"
     },
-    tblHeaderColor: {
+    disabledClass: {
       type: String,
-      default: ""
-    },
-    listDark: {
-      type: Boolean,
-      default: false
-    },
-    smallChip: {
-      type: Boolean,
-      default: false
-    },
-    centerChip: {
-      type: Boolean,
-      default: false
-    },
-    noChip: {
-      type: Boolean,
-      default: false
-    },
-    header: {
-      type: Boolean,
-      default: false
+      default: "bg-grey-4"
     },
     tableHeight: {
       type: Number,
       default: 400
     },
-    tableClass: {
+    timeStyle: {
       type: String,
-      default: "shadow-2 rounded-borders"
+      default: "background-color: #00b9de"
     },
-    helpMsg: {
+    timeClass: {
       type: String,
-      default: "Click on desired date"
-    }
-  },
-  watch: {
-    selected: function(val) {
-      if (val.length && !val[0].isEnabled) {
-        this.selected = [];
-      }
-      this.$emit("selection", this.selected);
-    }
-  },
-  created() {
-    let dateObj = {};
-
-    this.dateOptions.forEach(date => {
-      const parsedDate = moment(date.label);
-      const day = parsedDate.isoWeekday();
-      const mappedDay = this.daysMap[day].id;
-      const columnOpt = {
-        name: mappedDay,
-        label: this.daysMap[day].label[this.lang],
-        field: mappedDay,
-        align: "left",
-        sortable: true
-      };
-
-      const hasSameColumn = this.columns.find(el => el.name === columnOpt.name);
-      dateObj[columnOpt.name] = {};
-      if (!hasSameColumn) {
-        this.columns.push(columnOpt);
-      }
-    });
-
-    const dates = {
-      mon: [],
-      tue: [],
-      wed: [],
-      thu: [],
-      fri: [],
-      sat: [],
-      sun: []
-    };
-
-    this.dateOptions.forEach(date => {
-      const belongsTo = this.daysMap[moment(date.label).isoWeekday()].id;
-
-      dates[belongsTo].push(date);
-    });
-
-    Object.keys(dates).forEach(key => {
-      if (dates[key].length % 2 !== 0) {
-        dates[key].splice(dates[key].length - 1, 1);
-      }
-      for (let i = 0; i < dates[key].length; i++) {
-        if (!dates[key][i + 1]) {
-          dates[key].splice(dates[key].length - 1, 1);
-          break;
-        }
-        dates[key][i] = {
-          isEnabled: dates[key][i].isEnabled,
-          label: `${moment(dates[key][i].label).format("HH:mm")}-${moment(
-            dates[key][i + 1].label
-          ).format("HH:mm")}`,
-          dateFrom: dates[key][i].label,
-          dateTo: dates[key][i + 1].label
-        };
-      }
-    });
-    this.dates = dates;
-  },
-  methods: {
-    pushSelected(row) {
-      this.selected = [];
-      this.selected.push(row);
+      default: "text-weight-bold text-white"
     },
-    itemClass(row) {
-      const selectedClass = this.selectedClass;
-      const disabledClass = " bg-grey-5";
-      let classStr = "";
-      if (row === this.selected[0]) classStr = classStr.concat(selectedClass);
-      if (row.isEnabled) classStr = classStr.concat(" cursor-pointer");
-      if (!row.isEnabled) classStr = classStr.concat(disabledClass);
-      return classStr;
+    selectedChipStyle: {
+      type: String,
+      default: "background-color: #00b9de"
     },
-    findDayById(id) {
-      let dayLabel = "";
-      Object.keys(this.daysMap).forEach(key => {
-        if (this.daysMap[key].id === id) {
-          dayLabel = this.daysMap[key].label[this.lang];
-        }
-      });
-      return dayLabel;
+    selectedChipClass: {
+      type: String,
+      default: "text-weight-bold text-white"
+    },
+    prevWeekLabel: {
+      type: String,
+      default: "Previous week"
+    },
+    nextWeekLabel: {
+      type: String,
+      default: "Next week"
     }
   },
   data() {
     return {
+      selectedDate: true,
+      page: 0,
+      pagination: {
+        rowsPerPage: 0
+      },
       selected: [],
       daysMap: {
         1: { id: "mon", label: { hu: "Hétfő", en: "Monday" } },
@@ -250,9 +195,212 @@ export default {
         6: { id: "sat", label: { hu: "Szombat", en: "Saturday" } },
         7: { id: "sun", label: { hu: "Vasárnap", en: "Sunday" } }
       },
-      columns: [],
-      dates: []
+      data: [],
+      columns: [
+        {
+          name: "time",
+          label: `${this.lang === "hu" ? "Idő" : "Time"}`,
+          field: "time",
+          align: "left"
+        },
+        {
+          name: "mon",
+          label: `${this.lang === "hu" ? "Hétfő" : "Monday"}`,
+          field: "mon",
+          align: "left"
+        },
+        {
+          name: "tue",
+          label: `${this.lang === "hu" ? "Kedd" : "Tuesday"}`,
+          field: "tue",
+          align: "left"
+        },
+        {
+          name: "wed",
+          label: `${this.lang === "hu" ? "Szerda" : "Wednesday"}`,
+          field: "wed",
+          align: "left"
+        },
+        {
+          name: "thu",
+          label: `${this.lang === "hu" ? "Csütörtök" : "Thursday"}`,
+          field: "thu",
+          align: "left"
+        },
+        {
+          name: "fri",
+          label: `${this.lang === "hu" ? "Péntek" : "Friday"}`,
+          field: "fri",
+          align: "left"
+        },
+        {
+          name: "sat",
+          label: `${this.lang === "hu" ? "Szombat" : "Saturday"}`,
+          field: "sat",
+          align: "left"
+        },
+        {
+          name: "sun",
+          label: `${this.lang === "hu" ? "Vasárnap" : "Sunday"}`,
+          field: "sun",
+          align: "left"
+        }
+      ]
     };
+  },
+  computed: {
+    currentWeek() {
+      const startOfWeek = moment()
+        .startOf("isoWeek")
+        .add(this.page, "week")
+        .format("YYYY/MM/DD");
+      const endOfWeek = moment()
+        .endOf("isoWeek")
+        .add(this.page, "week")
+        .format("YYYY/MM/DD");
+      return {
+        startOfWeek: startOfWeek,
+        endOfWeek: endOfWeek
+      };
+    },
+    hasNextWeek() {
+      let hasNext = false;
+      this.activeDates.forEach(date => {
+        const currentWeek = this.currentWeek;
+        const startOfWeek = moment(currentWeek.startOfWeek)
+          .add(1, "week")
+          .format("YYYY/MM/DD");
+        const endOfWeek = moment(currentWeek.endOfWeek)
+          .add(1, "week")
+          .format("YYYY/MM/DD");
+
+        if (moment(date.dateFrom).isBetween(startOfWeek, endOfWeek)) {
+          hasNext = true;
+          return hasNext;
+        }
+      });
+      return hasNext;
+    },
+    hasPreviousWeek() {
+      let hasNext = false;
+      this.activeDates.forEach(date => {
+        const currentWeek = this.currentWeek;
+        const startOfWeek = moment(currentWeek.startOfWeek)
+          .subtract(1, "week")
+          .format("YYYY/MM/DD");
+        const endOfWeek = moment(currentWeek.endOfWeek)
+          .subtract(1, "week")
+          .format("YYYY/MM/DD");
+
+        if (moment(date.dateFrom).isBetween(startOfWeek, endOfWeek)) {
+          hasNext = true;
+          return hasNext;
+        }
+      });
+      return hasNext;
+    }
+  },
+  watch: {
+    selected: function() {
+      this.$emit("selection", this.selected);
+    },
+    selectedDate: function(val) {
+      if (!val) {
+        this.selected = [];
+        this.selectedDate = true;
+        this.$emit("selection", this.selected);
+      }
+    }
+  },
+  created() {
+    this.hours.forEach(hour => {
+      this.data.push({
+        time: {
+          label: `${moment(hour.dateFrom).format("HH:mm")} - ${moment(
+            hour.dateTo
+          ).format("HH:mm")}`,
+          dateFrom: hour.dateFrom,
+          dateTo: hour.dateTo
+        },
+        mon: false,
+        tue: false,
+        wed: false,
+        thu: false,
+        fri: false,
+        sat: false,
+        sun: false
+      });
+    });
+
+    this.setPossibleArrivalDates();
+  },
+  methods: {
+    formatLabel() {
+      const dateFrom = this.selected[0].time.dateFrom;
+      const dateTo = this.selected[0].time.dateTo;
+      return `
+      ${moment(dateFrom).format("YYYY/MM/DD")} 
+      ${moment(dateFrom).format("HH:mm")} - ${moment(dateTo).format("HH:mm")} 
+      ${this.daysMap[moment(dateFrom).isoWeekday()].label[this.lang]}`;
+    },
+    setPage(increment) {
+      if (increment) {
+        this.page++;
+      } else this.page--;
+      this.setPossibleArrivalDates();
+    },
+    setPossibleArrivalDates() {
+      this.data.forEach(el => {
+        const dateFrom = el.time.dateFrom;
+        const dateTo = el.time.dateTo;
+
+        Object.keys(this.daysMap).forEach(day => {
+          this.$set(el, this.daysMap[day].id, false);
+          const matchedDate = this.activeDates.find(date => {
+            if (
+              moment(dateFrom).format("HH:mm") ===
+                moment(date.dateFrom).format("HH:mm") &&
+              moment(dateTo).format("HH:mm") ===
+                moment(date.dateTo).format("HH:mm") &&
+              this.daysMap[moment(date.dateFrom).isoWeekday()].id ===
+                this.daysMap[day].id &&
+              moment(date.dateFrom).isBetween(
+                this.currentWeek.startOfWeek,
+                this.currentWeek.endOfWeek
+              )
+            ) {
+              return true;
+            } else return false;
+          });
+
+          if (matchedDate) {
+            this.$set(el, this.daysMap[day].id, {
+              isEnabled: true,
+              time: matchedDate
+            });
+          }
+        });
+      });
+    },
+    pushSelected(row) {
+      if (!row.isEnabled) return;
+      this.selected = [];
+      this.selected.push(row);
+    },
+    itemClass(row) {
+      const selectedClass = this.selectedClass;
+      const disabledClass = this.disabledClass;
+      const activeClass = this.activeClass;
+      let classStr = "";
+      if (row.time && this.selected.length) {
+        if (row.time === this.selected[0].time)
+          classStr = classStr.concat(selectedClass);
+      }
+      if (row.isEnabled)
+        classStr = classStr.concat(` ${activeClass} cursor-pointer`);
+      if (!row.isEnabled) classStr = classStr.concat(disabledClass);
+      return classStr;
+    }
   }
 };
 </script>
