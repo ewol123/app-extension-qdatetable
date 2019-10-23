@@ -1,6 +1,5 @@
 <template>
   <q-table
-    :loading="loading"
     :dense="dense"
     :separator="separator"
     :color="color"
@@ -151,7 +150,6 @@ export default {
     },
     lang: {
       type: String,
-      validator: val => ["hu", "en"].includes(val.toLowerCase()),
       default: "en"
     },
     activeClass: {
@@ -194,10 +192,6 @@ export default {
       type: String,
       default: "Next week"
     },
-    weekThreshold: {
-      type: Number,
-      default: 6
-    },
     dense: {
       type: Boolean,
       default: false
@@ -210,23 +204,14 @@ export default {
   },
   data() {
     return {
-      loading: false,
       selectedDate: true,
       page: 0,
       pagination: {
         rowsPerPage: 0
       },
       selected: [],
-      daysMap: {
-        1: { id: "mon", label: { hu: "Hétfő", en: "Monday" } },
-        2: { id: "tue", label: { hu: "Kedd", en: "Tuesday" } },
-        3: { id: "wed", label: { hu: "Szerda", en: "Wednesday" } },
-        4: { id: "thu", label: { hu: "Csütörtök", en: "Thursday" } },
-        5: { id: "fri", label: { hu: "Péntek", en: "Friday" } },
-        6: { id: "sat", label: { hu: "Szombat", en: "Saturday" } },
-        7: { id: "sun", label: { hu: "Vasárnap", en: "Sunday" } }
-      },
       data: [],
+      dataCopy: [],
       columns: [
         {
           name: "time",
@@ -236,43 +221,43 @@ export default {
         },
         {
           name: "mon",
-          label: `${this.lang === "hu" ? "Hétfő" : "Monday"}`,
+          label: `${moment('1900-01-01').lang(this.lang).format("dddd")}`,
           field: "mon",
           align: "left"
         },
         {
           name: "tue",
-          label: `${this.lang === "hu" ? "Kedd" : "Tuesday"}`,
+          label: `${moment('1900-01-02').lang(this.lang).format("dddd")}`,
           field: "tue",
           align: "left"
         },
         {
           name: "wed",
-          label: `${this.lang === "hu" ? "Szerda" : "Wednesday"}`,
+          label: `${moment('1900-01-03').lang(this.lang).format("dddd")}`,
           field: "wed",
           align: "left"
         },
         {
           name: "thu",
-          label: `${this.lang === "hu" ? "Csütörtök" : "Thursday"}`,
+          label: `${moment('1900-01-04').lang(this.lang).format("dddd")}`,
           field: "thu",
           align: "left"
         },
         {
           name: "fri",
-          label: `${this.lang === "hu" ? "Péntek" : "Friday"}`,
+          label: `${moment('1900-01-05').lang(this.lang).format("dddd")}`,
           field: "fri",
           align: "left"
         },
         {
           name: "sat",
-          label: `${this.lang === "hu" ? "Szombat" : "Saturday"}`,
+          label: `${moment('1900-01-06').lang(this.lang).format("dddd")}`,
           field: "sat",
           align: "left"
         },
         {
           name: "sun",
-          label: `${this.lang === "hu" ? "Vasárnap" : "Sunday"}`,
+          label: `${moment('1900-01-07').lang(this.lang).format("dddd")}`,
           field: "sun",
           align: "left"
         }
@@ -281,11 +266,13 @@ export default {
   },
   computed: {
     currentWeek() {
-      const startOfWeek = moment.utc()
+      const startOfWeek = moment
+        .utc()
         .startOf("isoWeek")
         .add(this.page, "week")
         .format("YYYY/MM/DD");
-      const endOfWeek = moment.utc()
+      const endOfWeek = moment
+        .utc()
         .endOf("isoWeek")
         .add(this.page, "week")
         .format("YYYY/MM/DD");
@@ -325,9 +312,9 @@ export default {
     this.hours.forEach(hour => {
       this.data.push({
         time: {
-          label: `${moment.utc(hour.dateFrom).format("HH:mm")} - ${moment.utc(
-            hour.dateTo
-          ).format("HH:mm")}`,
+          label: `${moment.utc(hour.dateFrom).format("HH:mm")} - ${moment
+            .utc(hour.dateTo)
+            .format("HH:mm")}`,
           dateFrom: hour.dateFrom,
           dateTo: hour.dateTo
         },
@@ -341,6 +328,8 @@ export default {
       });
     });
 
+    this.dataCopy = JSON.parse(JSON.stringify(this.data));
+
     this.setPossibleArrivalDates();
   },
   methods: {
@@ -349,8 +338,13 @@ export default {
       const dateTo = this.selected[0].time.dateTo;
       return `
       ${moment.utc(dateFrom).format("YYYY/MM/DD")} 
-      ${moment.utc(dateFrom).format("HH:mm")} - ${moment.utc(dateTo).format("HH:mm")} 
-      ${this.daysMap[moment.utc(dateFrom).isoWeekday()].label[this.lang]}`;
+      ${moment.utc(dateFrom).format("HH:mm")} - ${moment
+        .utc(dateTo)
+        .format("HH:mm")} 
+      ${moment
+        .utc(dateFrom)
+        .lang(this.lang)
+        .format("dddd")}`;
     },
     setPage(increment) {
       if (increment) {
@@ -359,40 +353,30 @@ export default {
       this.setPossibleArrivalDates();
     },
     setPossibleArrivalDates() {
-      this.loading = true;
-      this.data.forEach(el => {
-        const dateFrom = el.time.dateFrom;
-        const dateTo = el.time.dateTo;
+      const copy = JSON.parse(JSON.stringify(this.dataCopy));
 
-        Object.keys(this.daysMap).forEach(day => {
-          this.$set(el, this.daysMap[day].id, false);
-          const matchedDate = this.activeDates.find(date => {
-            if (
-              moment.utc(dateFrom).format("HH:mm") ===
+      this.activeDates.forEach(date => {
+        if (
+          moment
+            .utc(date.dateFrom)
+            .isBetween(this.currentWeek.startOfWeek, this.currentWeek.endOfWeek)
+        ) {
+          const match = copy.find(
+            el =>
+              moment.utc(el.time.dateFrom).format("HH:mm") ===
                 moment.utc(date.dateFrom).format("HH:mm") &&
-              moment.utc(dateTo).format("HH:mm") ===
-                moment.utc(date.dateTo).format("HH:mm") &&
-              this.daysMap[moment.utc(date.dateFrom).isoWeekday()].id ===
-                this.daysMap[day].id &&
-              moment.utc(date.dateFrom).isBetween(
-                this.currentWeek.startOfWeek,
-                this.currentWeek.endOfWeek
-              )
-            ) {
-              return true;
-            } else return false;
-          });
-
-          if (matchedDate) {
-            this.$set(el, this.daysMap[day].id, {
-              isEnabled: true,
-              time: matchedDate
-            });
-          }
-        });
+              moment.utc(el.time.dateTo).format("HH:mm") ===
+                moment.utc(date.dateTo).format("HH:mm")
+          );
+          const day = moment(date.dateFrom)
+            .format("ddd")
+            .toLowerCase();
+          this.$set(match, day, { isEnabled: true, time: date });
+        }
       });
-      this.loading = false;
+      this.data = copy;
     },
+
     pushSelected(row) {
       if (!row.isEnabled) return;
       this.selected = [];

@@ -5,7 +5,7 @@
       @selection="selected = $event"
       :hours="hours"
       :active-dates="activeDates"
-      lang="en"></q-datetable>
+      ></q-datetable>
 
     <p class="text-weight-bold">{{ selected }}</p>
 
@@ -45,7 +45,15 @@ export default {
          {dateFrom:'2019-10-22T10:00:00.000Z', dateTo: '2019-10-22T10:30:00.000Z'}, 
          {dateFrom: '2019-10-22T10:30:00.000Z', dateTo: '2019-10-22T11:00:00.000Z'},
          {dateFrom:'2019-10-22T11:00:00.000Z', dateTo: '2019-10-22T11:30:00.000Z'}, 
-         {dateFrom: '2019-10-22T11:30:00.000Z', dateTo: '2019-10-22T12:00:00.000Z'}],
+         {dateFrom: '2019-10-22T11:30:00.000Z', dateTo: '2019-10-22T12:00:00.000Z'},
+         {dateFrom: '2019-10-22T12:00:00.000Z', dateTo: '2019-10-22T12:30:00.000Z'},
+         {dateFrom: '2019-10-22T12:30:00.000Z', dateTo: '2019-10-22T13:00:00.000Z'},
+         {dateFrom: '2019-10-22T13:00:00.000Z', dateTo: '2019-10-22T13:30:00.000Z'},
+         {dateFrom: '2019-10-22T13:30:00.000Z', dateTo: '2019-10-22T14:00:00.000Z'},
+         {dateFrom: '2019-10-22T14:00:00.000Z', dateTo: '2019-10-22T14:30:00.000Z'},
+         {dateFrom: '2019-10-22T14:30:00.000Z', dateTo: '2019-10-22T15:00:00.000Z'},
+         {dateFrom: '2019-10-22T15:00:00.000Z', dateTo: '2019-10-22T15:30:00.000Z'},
+         {dateFrom: '2019-10-22T15:30:00.000Z', dateTo: '2019-10-22T16:00:00.000Z'}],
       activeDates:[
          {dateFrom:'2019-10-22T08:00:00.000Z', dateTo: '2019-10-22T08:30:00.000Z'}, 
          {dateFrom:'2019-10-22T08:30:00.000Z', dateTo: '2019-10-22T09:00:00.000Z'}, 
