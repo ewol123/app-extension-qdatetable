@@ -1,121 +1,118 @@
 {
-  "type": "component",
-  "props": {
-    "hours": {
-      "type": "Array",
-      "desc": "Displayed hour options you want to appear in the table, on the leftmost side under time column. Must be an array of objects with the following structure. Month does not matter, only hours are parsed from the array",
-      "examples": [[
-      "{dateFrom:2019-10-22T08:00:00.000Z, dateTo: 2019-10-22T08:30:00.000Z}"
-      ]]
+    "type": "component",
+    "props": {
+        "hours": {
+            "type": "Array",
+            "desc": "Displayed hour options you want to appear in the table, on the leftmost side under time column. Must be an array of objects with the following structure. Month does not matter, only hours are parsed from the array",
+            "examples": [
+                [
+                    "{dateFrom:2019-10-22T08:00:00.000Z, dateTo: 2019-10-22T08:30:00.000Z}"
+                ]
+            ]
+        },
+        "activeDates": {
+            "type": "Array",
+            "desc": "Active date options you want to be selectable. Must be an array of objects with the following structure",
+            "examples": [
+                ["{dateFrom:2019-10-22T08:00:00.000Z, dateTo: 2019-10-22T08:30:00.000Z}"]
+            ]
+        },
+        "title": {
+            "type": "String",
+            "desc": "Title of the table",
+            "default": "Allowed Dates"
+        },
+        "color": {
+            "type": "String",
+            "desc": "Qtable color property",
+            "default": ""
+        },
+        "cardClass": {
+            "type": "String",
+            "desc": "QTable card class",
+            "default": ""
+        },
+        "tableClass": {
+            "type": "String",
+            "desc": "QTable table-class",
+            "default": ""
+        },
+        "tableHeaderClass": {
+            "type": "String",
+            "desc": "Qtable table-header-class",
+            "default": ""
+        },
+        "lang": {
+            "type": "String",
+            "desc": "default displayed language for days and header, any values accepted by moment.js should work",
+            "values": ["hu,en,fr,de, etc."],
+            "default": "en"
+        },
+        "activeClass": {
+            "type": "String",
+            "desc": "class for active date cells",
+            "default": "bg-green"
+        },
+        "selectedClass": {
+            "type": "String",
+            "desc": "class for selected date cell",
+            "default": "cursor-pointer bg-green-8"
+        },
+        "disabledClass": {
+            "type": "String",
+            "desc": "class for displayed but inactive date cells",
+            "default": "bg-grey-4"
+        },
+        "tableHeight": {
+            "type": "Number",
+            "desc": "the height of the table",
+            "default": 400
+        },
+        "timeStyle": {
+            "type": "String",
+            "desc": "Style for the leftmost hours cells",
+            "default": "background-color: #00b9de"
+        },
+        "timeClass": {
+            "type": "String",
+            "desc": "Class for the leftmost hours cells",
+            "default": "text-weight-bold text-white"
+        },
+        "selectedChipStyle": {
+            "type": "String",
+            "desc": "Selected date chip style",
+            "default": "background-color: #00b9de"
+        },
+        "selectedChipClass": {
+            "type": "String",
+            "desc": "Selected date chip class",
+            "default": "text-weight-bold text-white"
+        },
+        "prevWeekLabel": {
+            "type": "String",
+            "desc": "Previous week button label",
+            "default": "Previous week"
+        },
+        "nextWeekLabel": {
+            "type": "String",
+            "desc": "Next week button label",
+            "default": "Next week"
+        },
+        "dense": {
+            "type": "Boolean",
+            "desc": "Qtable dense mode",
+            "default": false
+        },
+        "separator": {
+            "type": "String",
+            "desc": "separator mode for QTable",
+            "values": ["vertical", "horizontal", "cell", "none"],
+            "default": "cell"
+        }
     },
-    "activeDates": {
-      "type": "Array",
-      "desc": "Active date options you want to be selectable. Must be an array of objects with the following structure",
-      "examples": [
-       [ "{dateFrom:2019-10-22T08:00:00.000Z, dateTo: 2019-10-22T08:30:00.000Z}" ]
-    ]
-    },
-    "title": {
-      "type": "String",
-      "desc": "Title of the table",
-      "default": "Allowed Dates"
-    },
-     "color": {
-      "type": "String",
-      "desc": "Qtable color property",
-      "default": ""
-    },
-    "cardClass": {
-      "type": "String",
-      "desc": "QTable card class",
-      "default": ""
-    },
-    "tableClass": {
-      "type": "String",
-      "desc": "QTable table-class",
-      "default": ""
-    },
-    "tableHeaderClass": {
-      "type": "String",
-      "desc": "Qtable table-header-class",
-      "default": ""
-    },
-    "lang": {
-      "type": "String",
-      "desc": "default displayed language for days, header",
-      "values": [ "en", "hu" ],
-      "default": "en"
-    },
-    "activeClass": {
-      "type": "String",
-      "desc": "class for active date cells",
-      "default": "bg-green"
-    },
-    "selectedClass": {
-      "type": "String",
-      "desc": "class for selected date cell",
-      "default": "cursor-pointer bg-green-8"
-    },
-    "disabledClass": {
-      "type": "String",
-      "desc": "class for displayed but inactive date cells",
-      "default": "bg-grey-4"
-    },
-    "tableHeight": {
-      "type": "Number",
-      "desc": "the height of the table",
-      "default": 400
-    },
-    "timeStyle": {
-      "type": "String",
-      "desc": "Style for the leftmost hours cells",
-      "default": "background-color: #00b9de"
-    },
-    "timeClass": {
-      "type": "String",
-      "desc": "Class for the leftmost hours cells",
-      "default": "text-weight-bold text-white"
-    },
-    "selectedChipStyle": {
-      "type": "String",
-      "desc": "Selected date chip style",
-      "default": "background-color: #00b9de"
-    },
-    "selectedChipClass": {
-      "type": "String",
-      "desc": "Selected date chip class",
-      "default": "text-weight-bold text-white"
-    },
-    "prevWeekLabel": {
-      "type": "String",
-      "desc": "Previous week button label",
-      "default": "Previous week"
-    },
-    "nextWeekLabel": {
-      "type": "String",
-      "desc": "Next week button label",
-      "default": "Next week"
-    },
-    "weekThreshold": {
-      "type": "Number",
-      "desc": "Threshold in weeks which the component should check for when deciding if prev and next week is allowed",
-      "default": 6
-    },
-    "dense": {
-      "type": "Boolean",
-      "desc": "Qtable dense mode",
-      "default": false
-    },
-    "separator": {
-      "type": "String",
-      "desc": "separator mode for QTable",
-      "values": ["vertical", "horizontal", "cell", "none"],
-      "default": "cell"
+    "events": {
+        "selection": {
+            "desc": "Emits the selected value"
+        }
     }
-  },
-  "events": {
-    "selection": {
-      "desc": "Emits the selected value"
-    }
-  }
 }
