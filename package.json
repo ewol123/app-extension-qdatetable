@@ -1,6 +1,6 @@
 {
   "name": "quasar-app-extension-qdatetable",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "Date/Time picker table for Quasar",
   "author": "Gyulavári Peti <gypeti23@gmail.com>",
   "license": "MIT",
