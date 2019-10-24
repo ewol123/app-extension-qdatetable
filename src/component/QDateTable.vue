@@ -110,6 +110,7 @@
 </template>
 <script>
 import moment from "moment";
+
 export default {
   props: {
     hours: {
@@ -221,43 +222,57 @@ export default {
         },
         {
           name: "mon",
-          label: `${moment('1900-01-01').lang(this.lang).format("dddd")}`,
+          label: `${moment("1900-01-01")
+            .lang(this.lang)
+            .format("dddd")}`,
           field: "mon",
           align: "left"
         },
         {
           name: "tue",
-          label: `${moment('1900-01-02').lang(this.lang).format("dddd")}`,
+          label: `${moment("1900-01-02")
+            .lang(this.lang)
+            .format("dddd")}`,
           field: "tue",
           align: "left"
         },
         {
           name: "wed",
-          label: `${moment('1900-01-03').lang(this.lang).format("dddd")}`,
+          label: `${moment("1900-01-03")
+            .lang(this.lang)
+            .format("dddd")}`,
           field: "wed",
           align: "left"
         },
         {
           name: "thu",
-          label: `${moment('1900-01-04').lang(this.lang).format("dddd")}`,
+          label: `${moment("1900-01-04")
+            .lang(this.lang)
+            .format("dddd")}`,
           field: "thu",
           align: "left"
         },
         {
           name: "fri",
-          label: `${moment('1900-01-05').lang(this.lang).format("dddd")}`,
+          label: `${moment("1900-01-05")
+            .lang(this.lang)
+            .format("dddd")}`,
           field: "fri",
           align: "left"
         },
         {
           name: "sat",
-          label: `${moment('1900-01-06').lang(this.lang).format("dddd")}`,
+          label: `${moment("1900-01-06")
+            .lang(this.lang)
+            .format("dddd")}`,
           field: "sat",
           align: "left"
         },
         {
           name: "sun",
-          label: `${moment('1900-01-07').lang(this.lang).format("dddd")}`,
+          label: `${moment("1900-01-07")
+            .lang(this.lang)
+            .format("dddd")}`,
           field: "sun",
           align: "left"
         }
@@ -266,13 +281,11 @@ export default {
   },
   computed: {
     currentWeek() {
-      const startOfWeek = moment
-        .utc()
+      const startOfWeek = moment()
         .startOf("isoWeek")
         .add(this.page, "week")
         .format("YYYY/MM/DD");
-      const endOfWeek = moment
-        .utc()
+      const endOfWeek = moment()
         .endOf("isoWeek")
         .add(this.page, "week")
         .format("YYYY/MM/DD");
@@ -282,17 +295,17 @@ export default {
       };
     },
     hasNextWeek() {
-      let dates = this.activeDates.map(date => moment.utc(date.dateTo));
+      let dates = this.activeDates.map(date => moment(date.dateTo));
       const maxDate = moment.max(dates);
       const endOfWeek = this.currentWeek.endOfWeek;
-      const isAfter = moment.utc(endOfWeek).isAfter(maxDate);
+      const isAfter = moment(endOfWeek).isAfter(maxDate);
       return !isAfter;
     },
     hasPreviousWeek() {
-      let dates = this.activeDates.map(date => moment.utc(date.dateFrom));
+      let dates = this.activeDates.map(date => moment(date.dateFrom));
       const minDate = moment.min(dates);
       const startOfWeek = this.currentWeek.startOfWeek;
-      const isBefore = moment.utc(startOfWeek).isBefore(minDate);
+      const isBefore = moment(startOfWeek).isBefore(minDate);
       return !isBefore;
     }
   },
@@ -312,9 +325,9 @@ export default {
     this.hours.forEach(hour => {
       this.data.push({
         time: {
-          label: `${moment.utc(hour.dateFrom).format("HH:mm")} - ${moment
-            .utc(hour.dateTo)
-            .format("HH:mm")}`,
+          label: `${moment(hour.dateFrom).format("HH:mm")} - ${moment(
+            hour.dateTo
+          ).format("HH:mm")}`,
           dateFrom: hour.dateFrom,
           dateTo: hour.dateTo
         },
@@ -337,12 +350,9 @@ export default {
       const dateFrom = this.selected[0].time.dateFrom;
       const dateTo = this.selected[0].time.dateTo;
       return `
-      ${moment.utc(dateFrom).format("YYYY/MM/DD")} 
-      ${moment.utc(dateFrom).format("HH:mm")} - ${moment
-        .utc(dateTo)
-        .format("HH:mm")} 
-      ${moment
-        .utc(dateFrom)
+      ${moment(dateFrom).format("YYYY/MM/DD")} 
+      ${moment(dateFrom).format("HH:mm")} - ${moment(dateTo).format("HH:mm")} 
+      ${moment(dateFrom)
         .lang(this.lang)
         .format("dddd")}`;
     },
@@ -357,24 +367,30 @@ export default {
 
       this.activeDates.forEach(date => {
         if (
-          moment
-            .utc(date.dateFrom)
-            .isBetween(this.currentWeek.startOfWeek, this.currentWeek.endOfWeek)
+          moment(date.dateFrom).isBetween(
+            this.currentWeek.startOfWeek,
+            this.currentWeek.endOfWeek
+          )
         ) {
           const match = copy.find(
             el =>
-              moment.utc(el.time.dateFrom).format("HH:mm") ===
-                moment.utc(date.dateFrom).format("HH:mm") &&
-              moment.utc(el.time.dateTo).format("HH:mm") ===
-                moment.utc(date.dateTo).format("HH:mm")
+              moment(el.time.dateFrom).format("HH:mm") ===
+                moment(date.dateFrom).format("HH:mm") &&
+              moment(el.time.dateTo).format("HH:mm") ===
+                moment(date.dateTo).format("HH:mm")
           );
           const day = moment(date.dateFrom)
+            .locale("en")
             .format("ddd")
             .toLowerCase();
-          this.$set(match, day, { isEnabled: true, time: date });
+
+          if (match) {
+            this.$set(match, day, { isEnabled: true, time: date });
+          }
         }
       });
       this.data = copy;
+      console.log(copy);
     },
 
     pushSelected(row) {

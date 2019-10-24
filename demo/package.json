@@ -26,7 +26,7 @@
         "eslint": "^5.10.0",
         "eslint-loader": "^2.1.1",
         "eslint-plugin-vue": "^5.0.0",
-        "quasar-app-extension-qdatetable": "^0.3.0",
+        "quasar-app-extension-qdatetable": "^0.3.3",
         "quasar-app-extension-qribbon": "^1.0.0-alpha.8"
     },
     "engines": {
