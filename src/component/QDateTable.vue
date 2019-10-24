@@ -390,7 +390,6 @@ export default {
         }
       });
       this.data = copy;
-      console.log(copy);
     },
 
     pushSelected(row) {
