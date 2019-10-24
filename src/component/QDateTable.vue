@@ -223,7 +223,7 @@ export default {
         {
           name: "mon",
           label: `${moment("1900-01-01")
-            .lang(this.lang)
+            .locale(this.lang)
             .format("dddd")}`,
           field: "mon",
           align: "left"
@@ -231,7 +231,7 @@ export default {
         {
           name: "tue",
           label: `${moment("1900-01-02")
-            .lang(this.lang)
+            .locale(this.lang)
             .format("dddd")}`,
           field: "tue",
           align: "left"
@@ -239,7 +239,7 @@ export default {
         {
           name: "wed",
           label: `${moment("1900-01-03")
-            .lang(this.lang)
+            .locale(this.lang)
             .format("dddd")}`,
           field: "wed",
           align: "left"
@@ -247,7 +247,7 @@ export default {
         {
           name: "thu",
           label: `${moment("1900-01-04")
-            .lang(this.lang)
+            .locale(this.lang)
             .format("dddd")}`,
           field: "thu",
           align: "left"
@@ -255,7 +255,7 @@ export default {
         {
           name: "fri",
           label: `${moment("1900-01-05")
-            .lang(this.lang)
+            .locale(this.lang)
             .format("dddd")}`,
           field: "fri",
           align: "left"
@@ -263,7 +263,7 @@ export default {
         {
           name: "sat",
           label: `${moment("1900-01-06")
-            .lang(this.lang)
+            .locale(this.lang)
             .format("dddd")}`,
           field: "sat",
           align: "left"
@@ -271,7 +271,7 @@ export default {
         {
           name: "sun",
           label: `${moment("1900-01-07")
-            .lang(this.lang)
+            .locale(this.lang)
             .format("dddd")}`,
           field: "sun",
           align: "left"
@@ -353,7 +353,7 @@ export default {
       ${moment(dateFrom).format("YYYY/MM/DD")} 
       ${moment(dateFrom).format("HH:mm")} - ${moment(dateTo).format("HH:mm")} 
       ${moment(dateFrom)
-        .lang(this.lang)
+        .locale(this.lang)
         .format("dddd")}`;
     },
     setPage(increment) {
