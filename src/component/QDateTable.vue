@@ -281,11 +281,14 @@ export default {
   },
   computed: {
     currentWeek() {
-      const startOfWeek = moment()
+      let dates = this.activeDates.map(date => moment(date.dateFrom));
+      const firstDate = moment.min(dates);
+
+      const startOfWeek = firstDate
         .startOf("isoWeek")
         .add(this.page, "week")
         .format("YYYY/MM/DD");
-      const endOfWeek = moment()
+      const endOfWeek = firstDate
         .endOf("isoWeek")
         .add(this.page, "week")
         .format("YYYY/MM/DD");
