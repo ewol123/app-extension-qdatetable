@@ -1,7 +1,7 @@
 <template>
   <q-page padding>
     <h6>Default mode</h6>
-    <q-datetable @selection="selected = $event" :hours="hours" :active-dates="activeDates"></q-datetable>
+    <q-datetable @selection="selected = $event"  :interval="[0, 30]" :hours="[8, 16]"  :active-dates="activeDates"></q-datetable>
 
     <p class="text-weight-bold">{{ selected }}</p>
 
@@ -10,7 +10,8 @@
     <q-datetable
       dense
       @selection="selected = $event"
-      :hours="hours"
+      :interval="[0, 30]"
+      :hours="[8, 16]"
       :active-dates="activeDates"
       title="Something"
       prev-week-label="Előző hét"
@@ -33,72 +34,6 @@ export default {
   data() {
     return {
       selected: null,
-      hours: [
-        {
-          dateFrom: "2019-10-25T06:00:00.000Z",
-          dateTo: "2019-10-25T06:30:00.000Z"
-        },
-        {
-          dateFrom: "2019-10-25T06:30:00.000Z",
-          dateTo: "2019-10-25T07:00:00.000Z"
-        },
-        {
-          dateFrom: "2019-10-25T07:00:00.000Z",
-          dateTo: "2019-10-25T07:30:00.000Z"
-        },
-        {
-          dateFrom: "2019-10-25T07:30:00.000Z",
-          dateTo: "2019-10-25T08:00:00.000Z"
-        },
-        {
-          dateFrom: "2019-10-22T08:00:00.000Z",
-          dateTo: "2019-10-22T08:30:00.000Z"
-        },
-        {
-          dateFrom: "2019-10-22T08:30:00.000Z",
-          dateTo: "2019-10-22T09:00:00.000Z"
-        },
-        {
-          dateFrom: "2019-10-22T09:00:00.000Z",
-          dateTo: "2019-10-22T09:30:00.000Z"
-        },
-        {
-          dateFrom: "2019-10-22T09:30:00.000Z",
-          dateTo: "2019-10-22T10:00:00.000Z"
-        },
-        {
-          dateFrom: "2019-10-22T10:00:00.000Z",
-          dateTo: "2019-10-22T10:30:00.000Z"
-        },
-        {
-          dateFrom: "2019-10-22T10:30:00.000Z",
-          dateTo: "2019-10-22T11:00:00.000Z"
-        },
-        {
-          dateFrom: "2019-10-22T11:00:00.000Z",
-          dateTo: "2019-10-22T11:30:00.000Z"
-        },
-        {
-          dateFrom: "2019-10-22T11:30:00.000Z",
-          dateTo: "2019-10-22T12:00:00.000Z"
-        },
-        {
-          dateFrom: "2019-10-22T12:00:00.000Z",
-          dateTo: "2019-10-22T12:30:00.000Z"
-        },
-        {
-          dateFrom: "2019-10-22T12:30:00.000Z",
-          dateTo: "2019-10-22T13:00:00.000Z"
-        },
-        {
-          dateFrom: "2019-10-22T13:00:00.000Z",
-          dateTo: "2019-10-22T13:30:00.000Z"
-        },
-        {
-          dateFrom: "2019-10-22T13:30:00.000Z",
-          dateTo: "2019-10-22T14:00:00.000Z"
-        }
-      ],
       activeDates: [
         {
           dateFrom: "2019-10-25T07:00:00.000Z",

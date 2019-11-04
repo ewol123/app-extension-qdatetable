@@ -3,11 +3,16 @@
     "props": {
         "hours": {
             "type": "Array",
-            "desc": "Displayed hour options you want to appear in the table, on the leftmost side under time column. Must be an array of objects with the following structure. Month does not matter, only hours are parsed from the array",
+            "desc": "Displayed hour options you want to appear in the table, on the leftmost side under time column. must contain hours in a from - to format. [8,16] means every hour between those two numbers",
             "examples": [
-                [
-                    "{dateFrom:2019-10-22T08:00:00.000Z, dateTo: 2019-10-22T08:30:00.000Z}"
-                ]
+                [8, 16]
+            ]
+        },
+        "intervals": {
+            "type": "Array",
+            "desc": "Time intervals the hours should be constructed. [0,30] means every half an hour",
+            "examples": [
+                [0,30]
             ]
         },
         "activeDates": {

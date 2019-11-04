@@ -113,9 +113,33 @@ import moment from "moment";
 
 export default {
   props: {
+    interval: {
+      type: Array,
+      required: true,
+      validator: values => {
+        if (values[0] > values[1]) {
+          return false;
+        }
+        values.forEach(value => {
+          if (isNaN(value) || value < 0) return false;
+        });
+
+        return true;
+      }
+    },
     hours: {
       type: Array,
-      default: () => []
+      required: true,
+      validator: values => {
+        if (values[0] > values[1]) {
+          return false;
+        }
+        values.forEach(value => {
+          if (isNaN(value) || value < 0) return false;
+        });
+
+        return true;
+      }
     },
     activeDates: {
       type: Array,
@@ -325,24 +349,51 @@ export default {
     }
   },
   created() {
-    this.hours.forEach(hour => {
-      this.data.push({
-        time: {
-          label: `${moment(hour.dateFrom).format("HH:mm")} - ${moment(
-            hour.dateTo
-          ).format("HH:mm")}`,
-          dateFrom: hour.dateFrom,
-          dateTo: hour.dateTo
+    const start = this.hours[0];
+    const end = this.hours[1];
+    const interval = this.interval[1] - this.interval[0];
+    const date = moment(new Date()).format("YYYY/MM");
+    for (let i = start; i < end; i++) {
+      const dateFrom = moment(date).add(i, "hours");
+      const dateTo = moment(date)
+        .add(i, "hours")
+        .add(interval, "minutes");
+
+      this.data.push(
+        {
+          time: {
+            label: `${moment(dateFrom).format("HH:mm")} - ${moment(
+              dateTo
+            ).format("HH:mm")}`,
+            dateFrom: dateFrom,
+            dateTo: dateTo
+          },
+          mon: false,
+          tue: false,
+          wed: false,
+          thu: false,
+          fri: false,
+          sat: false,
+          sun: false
         },
-        mon: false,
-        tue: false,
-        wed: false,
-        thu: false,
-        fri: false,
-        sat: false,
-        sun: false
-      });
-    });
+        {
+          time: {
+            label: `${moment(dateTo).format("HH:mm")} - ${moment(dateFrom)
+              .add(1, "hours")
+              .format("HH:mm")}`,
+            dateFrom: moment(dateTo),
+            dateTo: moment(dateFrom).add(1, "hours")
+          },
+          mon: false,
+          tue: false,
+          wed: false,
+          thu: false,
+          fri: false,
+          sat: false,
+          sun: false
+        }
+      );
+    }
 
     this.dataCopy = JSON.parse(JSON.stringify(this.data));
 
