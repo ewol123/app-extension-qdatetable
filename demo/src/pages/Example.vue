@@ -11,7 +11,7 @@
       dense
       @selection="selected = $event"
       :interval="[0, 30]"
-      :hours="[8, 16]"
+      :hours="[8,9,10,11,12,13,14,15,16]"
       :active-dates="activeDates"
       title="Something"
       prev-week-label="Előző hét"

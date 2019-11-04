@@ -3,14 +3,14 @@
     "props": {
         "hours": {
             "type": "Array",
-            "desc": "Displayed hour options you want to appear in the table, on the leftmost side under time column. must contain hours in a from - to format. [8,16] means every hour between those two numbers",
+            "desc": "Displayed hour options you want to appear in the table, on the leftmost side under time column.",
             "examples": [
-                [8, 16]
+                [8, 9,10,11,12,13,14,15,16]
             ]
         },
         "intervals": {
             "type": "Array",
-            "desc": "Time intervals the hours should be constructed. [0,30] means every half an hour",
+            "desc": "Time intervals the hours should be constructed with. [0,30] means every half an hour.",
             "examples": [
                 [0,30]
             ]

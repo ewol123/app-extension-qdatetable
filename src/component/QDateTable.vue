@@ -131,13 +131,9 @@ export default {
       type: Array,
       required: true,
       validator: values => {
-        if (values[0] > values[1]) {
-          return false;
-        }
         values.forEach(value => {
           if (isNaN(value) || value < 0) return false;
         });
-
         return true;
       }
     },
@@ -349,34 +345,33 @@ export default {
     }
   },
   created() {
-    const start = this.hours[0];
-    const end = this.hours[1];
     const interval = this.interval[1] - this.interval[0];
     const date = moment(new Date()).format("YYYY/MM");
-    for (let i = start; i < end; i++) {
-      const dateFrom = moment(date).add(i, "hours");
+    for (let i = 0; i < this.hours.length; i++) {
+      const dateFrom = moment(date).add(this.hours[i], "hours");
       const dateTo = moment(date)
-        .add(i, "hours")
+        .add(this.hours[i], "hours")
         .add(interval, "minutes");
 
-      this.data.push(
-        {
-          time: {
-            label: `${moment(dateFrom).format("HH:mm")} - ${moment(
-              dateTo
-            ).format("HH:mm")}`,
-            dateFrom: dateFrom,
-            dateTo: dateTo
-          },
-          mon: false,
-          tue: false,
-          wed: false,
-          thu: false,
-          fri: false,
-          sat: false,
-          sun: false
+      this.data.push({
+        time: {
+          label: `${moment(dateFrom).format("HH:mm")} - ${moment(dateTo).format(
+            "HH:mm"
+          )}`,
+          dateFrom: dateFrom,
+          dateTo: dateTo
         },
-        {
+        mon: false,
+        tue: false,
+        wed: false,
+        thu: false,
+        fri: false,
+        sat: false,
+        sun: false
+      });
+
+      if (interval < 60) {
+        this.data.push({
           time: {
             label: `${moment(dateTo).format("HH:mm")} - ${moment(dateFrom)
               .add(1, "hours")
@@ -391,8 +386,8 @@ export default {
           fri: false,
           sat: false,
           sun: false
-        }
-      );
+        });
+      }
     }
 
     this.dataCopy = JSON.parse(JSON.stringify(this.data));
