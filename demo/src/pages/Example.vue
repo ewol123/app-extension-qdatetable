@@ -1,16 +1,16 @@
 <template>
   <q-page padding>
     <h6>Default mode</h6>
-    <q-datetable @selection="selected = $event"  :interval="[0, 30]" :hours="[8, 16]"  :active-dates="activeDates"></q-datetable>
+    <datetable @selection="selected = $event"  :interval="interval" :hours="[8, 16]"  :active-dates="activeDates"></datetable>
 
     <p class="text-weight-bold">{{ selected }}</p>
 
     <h6>Custom mode</h6>
     <span class="text-caption text-grey">Full list of properties can be found in the documentation</span>
-    <q-datetable
+    <datetable
       dense
       @selection="selected = $event"
-      :interval="[0, 30]"
+      :interval="interval"
       :hours="[8,9,10,11,12,13,14,15,16]"
       :active-dates="activeDates"
       title="Something"
@@ -23,41 +23,73 @@
       table-class="text-grey-8"
       table-header-class="text-brown"
       lang="hu"
-    ></q-datetable>
+      :items-in-order="100"
+    ></datetable>
+      
+      <datetable 
+      class="q-mt-sm" 
+      @selection="selected = $event" 
+      @setQuantity="doSmtg($event)" 
+      @intervalChanged="changeInterval($event)" 
+      @dayException="changeDayException($event)"
+      :exceptions="exceptions" 
+      :interval="interval" 
+      :hours="[8,9,10,11,12,13,14,15,16]"  
+      :active-dates="activeDates" 
+      mode="edit"></datetable>
+
 
     <p class="text-weight-bold">{{ selected }}</p>
   </q-page>
 </template>
 
 <script>
+import datetable from "../components/QDateTable";
 export default {
+  components: {
+    datetable
+  },
   data() {
     return {
+      interval: [0, 30],
       selected: null,
+      exceptions: ['2019/10/21'],
       activeDates: [
         {
           dateFrom: "2019-10-25T07:00:00.000Z",
-          dateTo: "2019-10-25T07:30:00.000Z"
+          dateTo: "2019-10-25T07:30:00.000Z",
+          maxItems: 400,
+          currentItems: 300
         },
         {
           dateFrom: "2019-10-25T07:30:00.000Z",
-          dateTo: "2019-10-25T08:00:00.000Z"
+          dateTo: "2019-10-25T08:00:00.000Z",
+          maxItems: 600,
+          currentItems: 400
         },
         {
           dateFrom: "2019-10-25T08:00:00.000Z",
-          dateTo: "2019-10-25T08:30:00.000Z"
+          dateTo: "2019-10-25T08:30:00.000Z",
+          maxItems: 1200,
+          currentItems: 10
         },
         {
           dateFrom: "2019-10-25T08:30:00.000Z",
-          dateTo: "2019-10-25T09:00:00.000Z"
+          dateTo: "2019-10-25T09:00:00.000Z",
+          maxItems: 400,
+          currentItems: 100
         },
         {
           dateFrom: "2019-10-25T09:00:00.000Z",
-          dateTo: "2019-10-25T09:30:00.000Z"
+          dateTo: "2019-10-25T09:30:00.000Z",
+          maxItems: 4500,
+          currentItems: 1200
         },
         {
           dateFrom: "2019-10-25T09:30:00.000Z",
-          dateTo: "2019-10-25T10:00:00.000Z"
+          dateTo: "2019-10-25T10:00:00.000Z",
+          maxItems: 450,
+          currentItems: 120
         },
         {
           dateFrom: "2019-10-25T10:00:00.000Z",
@@ -333,6 +365,31 @@ export default {
         }
       ]
     };
+  },
+  methods: {
+    doSmtg(val){
+      const match = this.activeDates.find(el => el.dateFrom === val.row.time.dateFrom && el.dateTo === val.row.time.dateTo);
+
+      const index = this.activeDates.findIndex(el =>el === match);
+      if(index !== -1 ){
+        this.activeDates[index].maxItems = val.quantity;
+      }
+    },
+    changeInterval(val){
+     this.interval = val.map(el => parseInt(el));
+    },
+    changeDayException(val){
+      if(val.enable) {
+      const index = this.exceptions.findIndex(el => el === val.el);
+            if(index !== -1){
+              this.exceptions.splice(index,1);
+            }
+      } else {
+        this.exceptions.push(val.el);
+      }
+
+     
+    }
   }
 };
 </script>
