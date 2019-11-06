@@ -483,7 +483,7 @@ export default {
           sun: false
         });
 
-        if (interval < 60) {
+        if (this.interval < 60) {
           this.data.push({
             time: {
               label: `${moment(dateTo).format("HH:mm")} - ${moment(dateFrom)
