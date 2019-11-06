@@ -334,6 +334,15 @@ export default {
   },
   data() {
     return {
+       daysMap: {
+        mon: 0,
+        tue: 1,
+        wed: 2,
+        thu: 3,
+        fri: 4,
+        sat: 5,
+        sun: 6
+      },
       intervalCopy: this.interval,
       quantityToSet: null,
       selectedDate: true,
@@ -513,8 +522,7 @@ export default {
       this.setPossibleArrivalDates();
     },
     getHeaderDate(name) {
-      let day = moment(name, "ddd").isoWeekday();
-      day = day - 1;
+      const day = this.daysMap[name];
       const date = moment(this.currentWeek.startOfWeek)
         .add(day, "days")
         .format("YYYY/MM/DD");
