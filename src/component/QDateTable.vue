@@ -44,8 +44,6 @@
                     filled
                     use-input
                     use-chips
-                    multiple
-                    maxlength="2"
                     hide-dropdown-icon
                     input-debounce="0"
                     new-value-mode="add"
@@ -221,20 +219,9 @@ export default {
       validator: value => ["normal", "edit"].includes(value)
     },
     interval: {
-      type: Array,
+      type: Number,
       required: true,
-      validator: values => {
-        if (values[0] > values[1]) {
-          return false;
-        }
-        values.forEach(value => {
-          if (isNaN(value) || value < 0) return false;
-        });
-
-        if (values.length > 2) return false;
-
-        return true;
-      }
+      validator: value => value > 0 
     },
     hours: {
       type: Array,
@@ -472,14 +459,13 @@ export default {
   },
   methods: {
     init() {
-      const interval = this.interval[1] - this.interval[0];
       const date = moment(new Date()).format("YYYY/MM");
       this.data = [];
       for (let i = 0; i < this.hours.length; i++) {
         const dateFrom = moment(date).add(this.hours[i], "hours");
         const dateTo = moment(date)
           .add(this.hours[i], "hours")
-          .add(interval, "minutes");
+          .add(this.interval, "minutes");
         this.data.push({
           time: {
             label: `${moment(dateFrom).format("HH:mm")} - ${moment(

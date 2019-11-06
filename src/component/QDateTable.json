@@ -16,10 +16,10 @@
             ]
         },
         "intervals": {
-            "type": "Array",
-            "desc": "Time intervals the hours should be constructed with. [0,30] means every half an hour.",
+            "type": "Number",
+            "desc": "Time intervals the hours should be constructed with. 30 means every half an hour.",
             "examples": [
-                [0,30]
+                30
             ]
         },
         "title": {
