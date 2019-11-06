@@ -38,15 +38,11 @@
                         })
                     "
                   />
-                  <q-select
+                  <q-input
                     v-if="col.name === 'time'"
                     v-model="intervalCopy"
                     filled
-                    use-input
                     use-chips
-                    hide-dropdown-icon
-                    input-debounce="0"
-                    new-value-mode="add"
                     style="width: 250px"
                   />
                 </q-card-section>
@@ -221,7 +217,7 @@ export default {
     interval: {
       type: Number,
       required: true,
-      validator: value => value > 0 
+      validator: value => value > 0
     },
     hours: {
       type: Array,
