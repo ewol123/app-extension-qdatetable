@@ -5,7 +5,6 @@
     :color="color"
     :card-class="cardClass"
     :table-class="tableClass"
-    :table-header-class="tableHeaderClass"
     :title="`${title} (${currentWeek.startOfWeek} - ${currentWeek.endOfWeek})`"
     :data="data"
     :columns="columns"
@@ -15,57 +14,134 @@
     row-key="name"
     virtual-scroll
   >
+    <template v-slot:header="props">
+      <q-tr :props="props">
+        <q-th
+          v-for="col in props.cols"
+          :key="col.name"
+          :props="props"
+          :class="tableHeaderClass"
+        >
+          {{ col.label }}
+          <q-btn v-if="mode === 'edit'" icon="fas fa-edit" size="small" flat>
+            <q-menu>
+              <q-card>
+                <q-card-section>
+                  <q-checkbox
+                    v-if="col.name !== 'time'"
+                    :value="isDayInExceptions(col.name)"
+                    @input="
+                      val =>
+                        $emit('dayException', {
+                          enable: val,
+                          el: getHeaderDate(col.name)
+                        })
+                    "
+                  />
+                  <q-select
+                    v-if="col.name === 'time'"
+                    v-model="intervalCopy"
+                    filled
+                    use-input
+                    use-chips
+                    multiple
+                    maxlength="2"
+                    hide-dropdown-icon
+                    input-debounce="0"
+                    new-value-mode="add"
+                    style="width: 250px"
+                  />
+                </q-card-section>
+                <q-card-actions
+                  v-if="col.name === 'time'"
+                  class="row justify-end"
+                >
+                  <q-btn v-close-popup flat label="Mégse"></q-btn>
+                  <q-btn
+                    v-close-popup
+                    flat
+                    label="Mentés"
+                    @click="$emit('intervalChanged', intervalCopy)"
+                  ></q-btn>
+                </q-card-actions>
+              </q-card>
+            </q-menu>
+          </q-btn>
+        </q-th>
+      </q-tr>
+    </template>
+
     <q-tr slot="body" slot-scope="props" :props="props">
       <q-td key="time" :props="props" :style="timeStyle" :class="timeClass">
-        {{
-        props.row.time.label
-        }}
+        {{ props.row.time.label }}
       </q-td>
 
-      <q-td
-        key="mon"
-        :props="props"
-        :class="itemClass(props.row.mon)"
-        @click.native="pushSelected(props.row.mon)"
-      ></q-td>
+      <template v-if="mode === 'edit'">
+        <q-td
+          v-for="day in ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']"
+          :key="day"
+          :props="props"
+          :class="itemClass(props.row[day])"
+        >
+          <div
+            v-if="props.row[day].isEnabled && props.row[day].time.maxItems"
+            style="width:40px"
+          >
+            <span :class="itemQuantityDisplayClass"
+              >{{ props.row[day].time.currentItems }} /
+              {{ props.row[day].time.maxItems }}</span
+            >
+            <q-icon
+              :class="rowEditIconClass"
+              name="fas fa-box q-ml-sm"
+            ></q-icon>
+            <q-btn
+              :color="rowEditBtnColor"
+              icon="fas fa-edit"
+              flat
+              round
+              size="md"
+            >
+              <q-menu>
+                <q-card>
+                  <q-card-section>
+                    <q-input
+                      v-model="quantityToSet"
+                      type="number"
+                      label="Új mennyiség"
+                      class="q-pa-sm"
+                    ></q-input>
+                  </q-card-section>
+                  <q-card-actions class="row justify-end q-pa-sm">
+                    <q-btn v-close-popup flat label="Mégse"></q-btn>
+                    <q-btn
+                      v-close-popup
+                      flat
+                      label="Mentés"
+                      @click="
+                        $emit('setQuantity', {
+                          row: props.row[day],
+                          quantity: quantityToSet
+                        })
+                      "
+                    ></q-btn>
+                  </q-card-actions>
+                </q-card>
+              </q-menu>
+            </q-btn>
+          </div>
+        </q-td>
+      </template>
 
-      <q-td
-        key="tue"
-        :props="props"
-        :class="itemClass(props.row.tue)"
-        @click.native="pushSelected(props.row.tue)"
-      ></q-td>
-
-      <q-td
-        key="wed"
-        :props="props"
-        :class="itemClass(props.row.wed)"
-        @click.native="pushSelected(props.row.wed)"
-      ></q-td>
-      <q-td
-        key="thu"
-        :props="props"
-        :class="itemClass(props.row.thu)"
-        @click.native="pushSelected(props.row.thu)"
-      ></q-td>
-      <q-td
-        key="fri"
-        :props="props"
-        :class="itemClass(props.row.fri)"
-        @click.native="pushSelected(props.row.fri)"
-      ></q-td>
-      <q-td
-        key="sat"
-        :props="props"
-        :class="itemClass(props.row.sat)"
-        @click.native="pushSelected(props.row.sat)"
-      ></q-td>
-      <q-td
-        key="sun"
-        :props="props"
-        :class="itemClass(props.row.sun)"
-        @click.native="pushSelected(props.row.sun)"
-      ></q-td>
+      <template v-if="mode === 'normal'">
+        <q-td
+          v-for="day in ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']"
+          :key="day"
+          :props="props"
+          :class="itemClass(props.row[day])"
+          @click.native="pushSelected(props.row[day])"
+        ></q-td>
+      </template>
     </q-tr>
 
     <div slot="bottom" class="full-width">
@@ -113,6 +189,37 @@ import moment from "moment";
 
 export default {
   props: {
+    itemQuantityDisplayClass: {
+      type: String,
+      required: false,
+      default: "text-weight-bold"
+    },
+    rowEditBtnColor: {
+      type: String,
+      required: false,
+      default: "white"
+    },
+    rowEditIconClass: {
+      type: String,
+      required: false,
+      default: ""
+    },
+    exceptions: {
+      type: Array,
+      required: false,
+      default: () => []
+    },
+    itemsInOrder: {
+      type: Number,
+      required: false,
+      default: 0
+    },
+    mode: {
+      type: String,
+      required: false,
+      default: "normal",
+      validator: value => ["normal", "edit"].includes(value)
+    },
     interval: {
       type: Array,
       required: true,
@@ -123,6 +230,8 @@ export default {
         values.forEach(value => {
           if (isNaN(value) || value < 0) return false;
         });
+
+        if (values.length > 2) return false;
 
         return true;
       }
@@ -140,7 +249,7 @@ export default {
     activeDates: {
       type: Array,
       default: () => [],
-      required: true,
+      required: false,
       validator: values => {
         values.forEach(val => {
           if ("dateFrom" in val === false || "dateTo" in val === false)
@@ -167,7 +276,7 @@ export default {
     },
     tableHeaderClass: {
       type: String,
-      default: ""
+      default: "text-italic text-purple"
     },
     lang: {
       type: String,
@@ -225,6 +334,8 @@ export default {
   },
   data() {
     return {
+      intervalCopy: this.interval,
+      quantityToSet: null,
       selectedDate: true,
       page: 0,
       pagination: {
@@ -342,42 +453,31 @@ export default {
         this.selectedDate = true;
         this.$emit("selection", this.selected);
       }
+    },
+    interval: function() {
+      this.init();
     }
   },
   created() {
-    const interval = this.interval[1] - this.interval[0];
-    const date = moment(new Date()).format("YYYY/MM");
-    for (let i = 0; i < this.hours.length; i++) {
-      const dateFrom = moment(date).add(this.hours[i], "hours");
-      const dateTo = moment(date)
-        .add(this.hours[i], "hours")
-        .add(interval, "minutes");
-
-      this.data.push({
-        time: {
-          label: `${moment(dateFrom).format("HH:mm")} - ${moment(dateTo).format(
-            "HH:mm"
-          )}`,
-          dateFrom: dateFrom,
-          dateTo: dateTo
-        },
-        mon: false,
-        tue: false,
-        wed: false,
-        thu: false,
-        fri: false,
-        sat: false,
-        sun: false
-      });
-
-      if (interval < 60) {
+    this.init();
+  },
+  methods: {
+    init() {
+      const interval = this.interval[1] - this.interval[0];
+      const date = moment(new Date()).format("YYYY/MM");
+      this.data = [];
+      for (let i = 0; i < this.hours.length; i++) {
+        const dateFrom = moment(date).add(this.hours[i], "hours");
+        const dateTo = moment(date)
+          .add(this.hours[i], "hours")
+          .add(interval, "minutes");
         this.data.push({
           time: {
-            label: `${moment(dateTo).format("HH:mm")} - ${moment(dateFrom)
-              .add(1, "hours")
-              .format("HH:mm")}`,
-            dateFrom: moment(dateTo),
-            dateTo: moment(dateFrom).add(1, "hours")
+            label: `${moment(dateFrom).format("HH:mm")} - ${moment(
+              dateTo
+            ).format("HH:mm")}`,
+            dateFrom: dateFrom,
+            dateTo: dateTo
           },
           mon: false,
           tue: false,
@@ -387,14 +487,49 @@ export default {
           sat: false,
           sun: false
         });
+
+        if (interval < 60) {
+          this.data.push({
+            time: {
+              label: `${moment(dateTo).format("HH:mm")} - ${moment(dateFrom)
+                .add(1, "hours")
+                .format("HH:mm")}`,
+              dateFrom: moment(dateTo),
+              dateTo: moment(dateFrom).add(1, "hours")
+            },
+            mon: false,
+            tue: false,
+            wed: false,
+            thu: false,
+            fri: false,
+            sat: false,
+            sun: false
+          });
+        }
       }
-    }
 
-    this.dataCopy = JSON.parse(JSON.stringify(this.data));
+      this.dataCopy = JSON.parse(JSON.stringify(this.data));
 
-    this.setPossibleArrivalDates();
-  },
-  methods: {
+      this.setPossibleArrivalDates();
+    },
+    getHeaderDate(name) {
+      let day = moment(name, "ddd").isoWeekday();
+      day = day - 1;
+      const date = moment(this.currentWeek.startOfWeek)
+        .add(day, "days")
+        .format("YYYY/MM/DD");
+      return date;
+    },
+    isDayInExceptions(name) {
+      if (name === "time") return;
+      const date = this.getHeaderDate(name);
+      const match = this.exceptions.find(
+        el =>
+          moment(el).format("YYYY/MM/DD") === moment(date).format("YYYY/MM/DD")
+      );
+      if (match) return false;
+      else return true;
+    },
     formatLabel() {
       const dateFrom = this.selected[0].time.dateFrom;
       const dateTo = this.selected[0].time.dateTo;
@@ -434,7 +569,15 @@ export default {
             .toLowerCase();
 
           if (match) {
-            this.$set(match, day, { isEnabled: true, time: date });
+            let isAllowed;
+            const setData = { isEnabled: true, time: date };
+            if (date.maxItems && date.currentItems) {
+              isAllowed =
+                date.maxItems >= date.currentItems + this.itemsInOrder;
+            } else isAllowed = true;
+
+            if (isAllowed || this.mode === "edit")
+              this.$set(match, day, setData);
           }
         }
       });

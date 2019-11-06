@@ -1,18 +1,25 @@
 <template>
   <q-page padding>
     <h6>Default mode</h6>
-    <datetable @selection="selected = $event"  :interval="interval" :hours="[8, 16]"  :active-dates="activeDates"></datetable>
+    <q-datetable
+      :interval="interval"
+      :hours="[8, 16]"
+      :active-dates="activeDates"
+      @selection="selected = $event"
+    ></q-datetable>
 
     <p class="text-weight-bold">{{ selected }}</p>
 
     <h6>Custom mode</h6>
-    <span class="text-caption text-grey">Full list of properties can be found in the documentation</span>
-    <datetable
-      dense
-      @selection="selected = $event"
+    <span class="text-caption text-grey"
+      >Full list of properties can be found in the documentation</span
+    >
+    <q-datetable
       :interval="interval"
-      :hours="[8,9,10,11,12,13,14,15,16]"
+      :hours="[8, 9, 10, 11, 12, 13, 14, 15, 16]"
       :active-dates="activeDates"
+      :items-in-order="100"
+      dense
       title="Something"
       prev-week-label="Előző hét"
       next-week-label="Következő hét"
@@ -23,37 +30,34 @@
       table-class="text-grey-8"
       table-header-class="text-brown"
       lang="hu"
-      :items-in-order="100"
-    ></datetable>
-      
-      <datetable 
-      class="q-mt-sm" 
-      @selection="selected = $event" 
-      @setQuantity="doSmtg($event)" 
-      @intervalChanged="changeInterval($event)" 
-      @dayException="changeDayException($event)"
-      :exceptions="exceptions" 
-      :interval="interval" 
-      :hours="[8,9,10,11,12,13,14,15,16]"  
-      :active-dates="activeDates" 
-      mode="edit"></datetable>
+      @selection="selected = $event"
+    ></q-datetable>
 
+    <q-datetable
+      :exceptions="exceptions"
+      :interval="interval"
+      :hours="[8, 9, 10, 11, 12, 13, 14, 15, 16]"
+      :active-dates="activeDates"
+      class="q-mt-sm"
+      mode="edit"
+      @selection="selected = $event"
+      @setQuantity="doSmtg($event)"
+      @intervalChanged="changeInterval($event)"
+      @dayException="changeDayException($event)"
+    ></q-datetable>
 
     <p class="text-weight-bold">{{ selected }}</p>
   </q-page>
 </template>
 
 <script>
-import datetable from "../components/QDateTable";
+import moment from "moment";
 export default {
-  components: {
-    datetable
-  },
   data() {
     return {
       interval: [0, 30],
       selected: null,
-      exceptions: ['2019/10/21'],
+      exceptions: ["2019-10-22T07:00:00.000Z"],
       activeDates: [
         {
           dateFrom: "2019-10-25T07:00:00.000Z",
@@ -367,28 +371,34 @@ export default {
     };
   },
   methods: {
-    doSmtg(val){
-      const match = this.activeDates.find(el => el.dateFrom === val.row.time.dateFrom && el.dateTo === val.row.time.dateTo);
+    doSmtg(val) {
+      const match = this.activeDates.find(
+        el =>
+          el.dateFrom === val.row.time.dateFrom &&
+          el.dateTo === val.row.time.dateTo
+      );
 
-      const index = this.activeDates.findIndex(el =>el === match);
-      if(index !== -1 ){
+      const index = this.activeDates.findIndex(el => el === match);
+      if (index !== -1) {
         this.activeDates[index].maxItems = val.quantity;
       }
     },
-    changeInterval(val){
-     this.interval = val.map(el => parseInt(el));
+    changeInterval(val) {
+      this.interval = val.map(el => parseInt(el));
     },
-    changeDayException(val){
-      if(val.enable) {
-      const index = this.exceptions.findIndex(el => el === val.el);
-            if(index !== -1){
-              this.exceptions.splice(index,1);
-            }
+    changeDayException(val) {
+      if (val.enable) {
+        const index = this.exceptions.findIndex(
+          el =>
+            moment(el).format("YYYY/MM/DD") ===
+            moment(val.el).format("YYYY/MM/DD")
+        );
+        if (index !== -1) {
+          this.exceptions.splice(index, 1);
+        }
       } else {
         this.exceptions.push(val.el);
       }
-
-     
     }
   }
 };

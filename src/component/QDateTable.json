@@ -1,6 +1,13 @@
 {
     "type": "component",
     "props": {
+        "activeDates": {
+            "type": "Array",
+            "desc": "Active date options you want to be selectable. Must be an array of objects with the following structure",
+            "examples": [
+                ["{dateFrom:2019-10-22T08:00:00.000Z, dateTo: 2019-10-22T08:30:00.000Z}"]
+            ]
+        },
         "hours": {
             "type": "Array",
             "desc": "Displayed hour options you want to appear in the table, on the leftmost side under time column.",
@@ -13,13 +20,6 @@
             "desc": "Time intervals the hours should be constructed with. [0,30] means every half an hour.",
             "examples": [
                 [0,30]
-            ]
-        },
-        "activeDates": {
-            "type": "Array",
-            "desc": "Active date options you want to be selectable. Must be an array of objects with the following structure",
-            "examples": [
-                ["{dateFrom:2019-10-22T08:00:00.000Z, dateTo: 2019-10-22T08:30:00.000Z}"]
             ]
         },
         "title": {
@@ -113,7 +113,40 @@
             "desc": "separator mode for QTable",
             "values": ["vertical", "horizontal", "cell", "none"],
             "default": "cell"
-        }
+        },
+        "itemQuantityDisplayClass": {
+            "type": "String",
+            "desc": "class for the quantity display inside cells",
+            "default": "text-weight-bold"
+          },
+          "rowEditBtnColor": {
+            "type": "String",
+            "desc": "color for the quantity edit button",
+            "default": "white"
+          },
+          "rowEditIconClass": {
+            "type": "String",
+            "desc": "class for the small icon near the quantities",
+            "default": ""
+          },
+          "exceptions": {
+            "type": "Array",
+            "desc": "array of dates to disable a whole day",
+            "default": [],
+            "examples": ["2019/10/21"],
+            "values": "any valid date format should work, must contain YYYY MM DD"
+          },
+          "itemsInOrder": {
+            "type": "Number",
+            "desc": "number of items the user has in their order",
+            "default": 0
+          },
+          "mode": {
+            "type": "String",
+            "desc":"mode for the table",
+            "default": "normal",
+            "values": ["normal", "edit"]
+          }
     },
     "events": {
         "selection": {
