@@ -9,6 +9,7 @@
 const extendConf = function(conf) {
   // make sure qjumbotron boot file is registered
   conf.boot.push("~quasar-app-extension-qdatetable/src/boot/qdatetable.js");
+  conf.boot.push("~quasar-app-extension-qdatetable/src/boot/moment.js");
   console.log(
     ` App Extension (qdatetable) Info: 'Adding qdatetable boot reference to your quasar.conf.js'`
   );
