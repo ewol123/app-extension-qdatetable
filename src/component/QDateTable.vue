@@ -6,7 +6,7 @@
     :card-class="cardClass"
     :table-class="tableClass"
     :title="`${title} (${currentWeek.startOfWeek} - ${currentWeek.endOfWeek})`"
-    :data="data"
+    :data="possibleArrivalDates"
     :columns="columns"
     :table-style="`max-height: ${tableHeight}px`"
     :pagination.sync="pagination"
@@ -403,6 +403,45 @@ export default {
     };
   },
   computed: {
+    possibleArrivalDates() {
+      if(this.dataCopy){
+      const copy = JSON.parse(JSON.stringify(this.dataCopy));
+
+      this.activeDates.forEach(date => {
+        if (
+          moment(date.dateFrom).isBetween(
+            this.currentWeek.startOfWeek,
+            this.currentWeek.endOfWeek
+          )
+        ) {
+          const match = copy.find(
+            el =>
+              moment(el.time.dateFrom).format("HH:mm") ===
+                moment(date.dateFrom).format("HH:mm") &&
+              moment(el.time.dateTo).format("HH:mm") ===
+                moment(date.dateTo).format("HH:mm")
+          );
+          const day = moment(date.dateFrom)
+            .locale("en")
+            .format("ddd")
+            .toLowerCase();
+
+          if (match) {
+            let isAllowed;
+            const setData = { isEnabled: true, time: date };
+            if (date.maxItems && date.currentItems) {
+              isAllowed =
+                date.maxItems >= date.currentItems + this.itemsInOrder;
+            } else isAllowed = true;
+
+            if (isAllowed || this.mode === "edit")
+              this.$set(match, day, setData);
+          }
+        }
+      });
+      return copy;
+      } else return [];
+    },
     currentWeek() {
       let dates = this.activeDates.map(date => moment(date.dateFrom));
       const firstDate = moment.min(dates);
@@ -456,13 +495,13 @@ export default {
   methods: {
     init() {
       const date = moment(new Date()).format("YYYY/MM");
-      this.data = [];
+      const data = [];
       for (let i = 0; i < this.hours.length; i++) {
         const dateFrom = moment(date).add(this.hours[i], "hours");
         const dateTo = moment(date)
           .add(this.hours[i], "hours")
           .add(this.interval, "minutes");
-        this.data.push({
+        data.push({
           time: {
             label: `${moment(dateFrom).format("HH:mm")} - ${moment(
               dateTo
@@ -480,7 +519,7 @@ export default {
         });
 
         if (this.interval < 60) {
-          this.data.push({
+          data.push({
             time: {
               label: `${moment(dateTo).format("HH:mm")} - ${moment(dateFrom)
                 .add(1, "hours")
@@ -499,9 +538,8 @@ export default {
         }
       }
 
-      this.dataCopy = JSON.parse(JSON.stringify(this.data));
+      this.dataCopy = JSON.parse(JSON.stringify(data));
 
-      this.setPossibleArrivalDates();
     },
     getHeaderDate(name) {
       const day = this.daysMap[name];
@@ -534,46 +572,7 @@ export default {
       if (increment) {
         this.page++;
       } else this.page--;
-      this.setPossibleArrivalDates();
     },
-    setPossibleArrivalDates() {
-      const copy = JSON.parse(JSON.stringify(this.dataCopy));
-
-      this.activeDates.forEach(date => {
-        if (
-          moment(date.dateFrom).isBetween(
-            this.currentWeek.startOfWeek,
-            this.currentWeek.endOfWeek
-          )
-        ) {
-          const match = copy.find(
-            el =>
-              moment(el.time.dateFrom).format("HH:mm") ===
-                moment(date.dateFrom).format("HH:mm") &&
-              moment(el.time.dateTo).format("HH:mm") ===
-                moment(date.dateTo).format("HH:mm")
-          );
-          const day = moment(date.dateFrom)
-            .locale("en")
-            .format("ddd")
-            .toLowerCase();
-
-          if (match) {
-            let isAllowed;
-            const setData = { isEnabled: true, time: date };
-            if (date.maxItems && date.currentItems) {
-              isAllowed =
-                date.maxItems >= date.currentItems + this.itemsInOrder;
-            } else isAllowed = true;
-
-            if (isAllowed || this.mode === "edit")
-              this.$set(match, day, setData);
-          }
-        }
-      });
-      this.data = copy;
-    },
-
     pushSelected(row) {
       if (!row.isEnabled) return;
       this.selected = [];
