@@ -47,7 +47,7 @@
                 <q-card-section>
                   <q-checkbox
                     v-if="col.name !== 'time'"
-                    :value="isDayInExceptions(col.name)"
+                    :value="isDayEnabled(col.name)"
                     @input="
                       val =>
                         $emit('setDayException', {
@@ -493,17 +493,32 @@ export default {
       } else return [];
     },
     currentWeek() {
-      let dates = this.activeDates.map(date => moment(date.dateFrom));
-      const firstDate = moment.min(dates);
+      let startOfWeek;
+      let endOfWeek;
 
-      const startOfWeek = firstDate
+      if(this.mode === "edit"){
+        startOfWeek = moment()
+        .startOf("isoWeek")
+        .add(this.page,"week")
+        .format("YYYY/MM/DD");
+
+        endOfWeek = moment()
+        .endOf("isoWeek")
+        .add(this.page,"week")
+        .format("YYYY/MM/DD");
+      } else {
+        let dates = this.activeDates.map(date => moment(date.dateFrom));
+        const firstDate = moment.min(dates);
+
+       startOfWeek = firstDate
         .startOf("isoWeek")
         .add(this.page, "week")
         .format("YYYY/MM/DD");
-      const endOfWeek = firstDate
+       endOfWeek = firstDate
         .endOf("isoWeek")
         .add(this.page, "week")
         .format("YYYY/MM/DD");
+      }
       return {
         startOfWeek: startOfWeek,
         endOfWeek: endOfWeek
@@ -599,7 +614,7 @@ export default {
         .format("YYYY/MM/DD");
       return date;
     },
-    isDayInExceptions(name) {
+    isDayEnabled(name) {
       if (name === "time") return;
       const date = this.getHeaderDate(name);
       const match = this.exceptions.find(
