@@ -146,11 +146,56 @@
             "desc":"mode for the table",
             "default": "normal",
             "values": ["normal", "edit"]
+          },
+          "defQuantity": {
+              "type": "Number",
+              "desc": "default quantity used for items"
+          },
+          "saveLabel": {
+            "type": "String",
+            "desc": "Label for save buttons",
+            "default": "Mentés"
+          },
+          "cancelLabel": {
+            "type": "String",
+            "desc": "Label for cancel buttons",
+            "default": "Mégse"
+          },
+          "defQuantityBtnLabel":{
+            "type": "String",
+            "desc": "label for set default quantity button",
+            "default": "alapért. mennyiség"
+          },
+          "defQuantityInputLabel":{
+            "type": "String",
+            "desc":"label for default quantity menu input",
+            "default": "mennyiség"
+          },
+          "quantityInputLabel":{
+            "type": "String",
+            "desc": "label for quantity menu input",
+            "default": "Új mennyiség"
           }
     },
     "events": {
         "selection": {
             "desc": "Emits the selected value"
+        },
+        "setDefQuantity":{
+            "desc": "Emits when default quantity should be set for that day's item quota",
+            "values": ["the quantity to set"]
+        },
+        "setDayException":{
+            "desc":"Emits when day should be enabled/disabled",
+            "values": ["Boolean value and the date clicked on"]
+        },
+        "setInterval": {
+            "desc": "Emits when interval should be changed",
+            "values": ["new interval value as number"]
+        },
+        "setQuantity": {
+            "desc": "Emits when item quota on a specific day should be changed",
+            "values": ["row data, quantity, shouldRemove boolean"]
         }
     }
 }

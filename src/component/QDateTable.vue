@@ -14,6 +14,24 @@
     row-key="name"
     virtual-scroll
   >
+
+    <template v-if="mode === 'edit'" v-slot:top>
+      <span>{{title}} ({{currentWeek.startOfWeek}} - {{currentWeek.endOfWeek}})</span>
+      <q-btn :label="defQuantityBtnLabel"  icon="fas fa-boxes" class="q-ml-sm" color="primary">
+        <q-menu>
+          <q-card>
+            <q-card-section>
+              <q-input v-model="defQuantityToSet" :label="defQuantityInputLabel" type="number"/>
+            </q-card-section>
+            <q-card-actions class="row justify-end">
+              <q-btn :label="cancelLabel" flat v-close-popup/>
+              <q-btn :label="saveLabel" flat v-close-popup @click="$emit('setDefQuantity',defQuantityToSet)"/>
+            </q-card-actions>
+          </q-card>
+        </q-menu>
+      </q-btn>
+    </template>    
+
     <template v-slot:header="props">
       <q-tr :props="props">
         <q-th
@@ -32,7 +50,7 @@
                     :value="isDayInExceptions(col.name)"
                     @input="
                       val =>
-                        $emit('dayException', {
+                        $emit('setDayException', {
                           enable: val,
                           el: getHeaderDate(col.name)
                         })
@@ -50,12 +68,12 @@
                   v-if="col.name === 'time'"
                   class="row justify-end"
                 >
-                  <q-btn v-close-popup flat label="Mégse"></q-btn>
+                  <q-btn v-close-popup flat :label="cancelLabel"></q-btn>
                   <q-btn
                     v-close-popup
                     flat
-                    label="Mentés"
-                    @click="$emit('intervalChanged', intervalCopy)"
+                    :label="saveLabel"
+                    @click="$emit('setInterval', intervalCopy)"
                   ></q-btn>
                 </q-card-actions>
               </q-card>
@@ -78,7 +96,7 @@
           :class="itemClass(props.row[day])"
         >
           <div
-            v-if="props.row[day].isEnabled && props.row[day].time.maxItems"
+            v-if="props.row[day].isEnabled"
             style="width:40px"
           >
             <span :class="itemQuantityDisplayClass"
@@ -102,20 +120,21 @@
                     <q-input
                       v-model="quantityToSet"
                       type="number"
-                      label="Új mennyiség"
+                      :label="quantityInputLabel"
                       class="q-pa-sm"
                     ></q-input>
                   </q-card-section>
                   <q-card-actions class="row justify-end q-pa-sm">
-                    <q-btn v-close-popup flat label="Mégse"></q-btn>
+                    <q-btn v-close-popup flat :label="cancelLabel"></q-btn>
                     <q-btn
                       v-close-popup
                       flat
-                      label="Mentés"
+                      :label="saveLabel"
                       @click="
                         $emit('setQuantity', {
                           row: props.row[day],
-                          quantity: quantityToSet
+                          quantity: quantityToSet,
+                          shouldRemove: false
                         })
                       "
                     ></q-btn>
@@ -123,6 +142,7 @@
                 </q-card>
               </q-menu>
             </q-btn>
+          <q-btn v-if="props.row[day].time.maxItems != defQuantity" icon="fas fa-trash" flat round @click="$emit('setQuantity', {row: props.row[day], shouldRemove: true})"/>
           </div>
         </q-td>
       </template>
@@ -183,6 +203,35 @@ import moment from "moment";
 
 export default {
   props: {
+    quantityInputLabel:{
+      type: String,
+      required: false,
+      default: "Új mennyiség"
+    },
+    saveLabel: {
+      type: String,
+      required: false,
+      default: "Mentés"
+    },
+    cancelLabel: {
+      type: String,
+      required: false,
+      default: "Mégse"
+    },
+    defQuantityBtnLabel:{
+      type: String,
+      required: false,
+      default: "alapért. mennyiség"
+    },
+    defQuantityInputLabel:{
+      type: String,
+      required:false,
+      default: "mennyiség"
+    },
+    defQuantity:{
+      type: Number,
+      required: false,
+    },
     itemQuantityDisplayClass: {
       type: String,
       required: false,
@@ -328,6 +377,7 @@ export default {
       },
       intervalCopy: this.interval,
       quantityToSet: null,
+      defQuantityToSet: null,
       selectedDate: true,
       page: 0,
       pagination: {
@@ -429,7 +479,7 @@ export default {
           if (match) {
             let isAllowed;
             const setData = { isEnabled: true, time: date };
-            if (date.maxItems && date.currentItems) {
+            if ("maxItems" in date && "currentItems" in date) {
               isAllowed =
                 date.maxItems >= date.currentItems + this.itemsInOrder;
             } else isAllowed = true;
@@ -460,6 +510,7 @@ export default {
       };
     },
     hasNextWeek() {
+      if(this.mode === "edit") return true;
       let dates = this.activeDates.map(date => moment(date.dateTo));
       const maxDate = moment.max(dates);
       const endOfWeek = this.currentWeek.endOfWeek;
@@ -467,6 +518,7 @@ export default {
       return !isAfter;
     },
     hasPreviousWeek() {
+      if(this.mode === "edit") return true;
       let dates = this.activeDates.map(date => moment(date.dateFrom));
       const minDate = moment.min(dates);
       const startOfWeek = this.currentWeek.startOfWeek;
@@ -501,13 +553,12 @@ export default {
         const dateTo = moment(date)
           .add(this.hours[i], "hours")
           .add(this.interval, "minutes");
+
         data.push({
           time: {
-            label: `${moment(dateFrom).format("HH:mm")} - ${moment(
-              dateTo
-            ).format("HH:mm")}`,
-            dateFrom: dateFrom,
-            dateTo: dateTo
+            label: `${moment(dateFrom).utc().format("HH:mm")} - ${moment(dateTo).utc().format("HH:mm")}`,
+            dateFrom: dateFrom.toISOString(),
+            dateTo: dateTo.toISOString()
           },
           mon: false,
           tue: false,
@@ -521,11 +572,12 @@ export default {
         if (this.interval < 60) {
           data.push({
             time: {
-              label: `${moment(dateTo).format("HH:mm")} - ${moment(dateFrom)
+              label: `${moment(dateTo).utc().format("HH:mm")} - ${moment(dateFrom)
+                .utc()
                 .add(1, "hours")
                 .format("HH:mm")}`,
-              dateFrom: moment(dateTo),
-              dateTo: moment(dateFrom).add(1, "hours")
+              dateFrom: moment(dateTo).toISOString(),
+              dateTo: moment(dateFrom).add(1, "hours").toISOString()
             },
             mon: false,
             tue: false,
@@ -537,7 +589,6 @@ export default {
           });
         }
       }
-
       this.dataCopy = JSON.parse(JSON.stringify(data));
 
     },
