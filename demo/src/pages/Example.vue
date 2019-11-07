@@ -14,6 +14,7 @@
     <span class="text-caption text-grey"
       >Full list of properties can be found in the documentation</span
     >
+
     <q-datetable
       :interval="interval"
       :hours="[8, 9, 10, 11, 12, 13, 14, 15, 16]"
@@ -33,29 +34,15 @@
       @selection="selected = $event"
     ></q-datetable>
 
-    <q-datetable
-      :exceptions="exceptions"
-      :interval="interval"
-      :hours="[8, 9, 10, 11, 12, 13, 14, 15, 16]"
-      :active-dates="activeDates"
-      class="q-mt-sm"
-      mode="edit"
-      @selection="selected = $event"
-      @setQuantity="doSmtg($event)"
-      @intervalChanged="changeInterval($event)"
-      @dayException="changeDayException($event)"
-    ></q-datetable>
-
     <p class="text-weight-bold">{{ selected }}</p>
   </q-page>
 </template>
 
 <script>
-import moment from "moment";
 export default {
   data() {
     return {
-      interval: [0, 30],
+      interval: 30,
       selected: null,
       exceptions: ["2019-10-22T07:00:00.000Z"],
       activeDates: [
@@ -370,36 +357,5 @@ export default {
       ]
     };
   },
-  methods: {
-    doSmtg(val) {
-      const match = this.activeDates.find(
-        el =>
-          el.dateFrom === val.row.time.dateFrom &&
-          el.dateTo === val.row.time.dateTo
-      );
-
-      const index = this.activeDates.findIndex(el => el === match);
-      if (index !== -1) {
-        this.activeDates[index].maxItems = val.quantity;
-      }
-    },
-    changeInterval(val) {
-      this.interval = val.map(el => parseInt(el));
-    },
-    changeDayException(val) {
-      if (val.enable) {
-        const index = this.exceptions.findIndex(
-          el =>
-            moment(el).format("YYYY/MM/DD") ===
-            moment(val.el).format("YYYY/MM/DD")
-        );
-        if (index !== -1) {
-          this.exceptions.splice(index, 1);
-        }
-      } else {
-        this.exceptions.push(val.el);
-      }
-    }
-  }
 };
 </script>
