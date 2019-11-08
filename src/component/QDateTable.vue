@@ -21,7 +21,7 @@
         <q-menu>
           <q-card>
             <q-card-section>
-              <q-input v-model="defQuantityToSet" :label="defQuantityInputLabel" type="number"/>
+              <q-input v-model.number="defQuantityToSet" :label="defQuantityInputLabel" type="number"/>
             </q-card-section>
             <q-card-actions class="row justify-end">
               <q-btn :label="cancelLabel" flat v-close-popup/>
@@ -84,7 +84,8 @@
                   />
                   <q-input
                     v-if="col.name === 'time'"
-                    v-model="intervalCopy"
+                    v-model.number="intervalCopy"
+                    type="number"
                     filled
                     use-chips
                     style="width: 250px"
@@ -144,7 +145,7 @@
                 <q-card>
                   <q-card-section>
                     <q-input
-                      v-model="quantityToSet"
+                      v-model.number="quantityToSet"
                       type="number"
                       :label="quantityInputLabel"
                       class="q-pa-sm"
