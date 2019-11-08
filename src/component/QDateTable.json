@@ -175,7 +175,17 @@
             "type": "String",
             "desc": "label for quantity menu input",
             "default": "Új mennyiség"
-          }
+          },
+          "setHoursBtnLabel":{
+            "type": "String",
+            "desc": "label for set hours button",
+            "default": "Órák beállítása"
+          },
+          "setHoursInputLabel": {
+            "type": "String",
+            "desc": "label for input inside set hours qmenu",
+            "default": "Órák"
+          },
     },
     "events": {
         "selection": {

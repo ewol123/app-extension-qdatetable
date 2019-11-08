@@ -29,7 +29,33 @@
             </q-card-actions>
           </q-card>
         </q-menu>
+      </q-btn> 
+      <q-btn :label="setHoursBtnLabel" class="q-ml-sm" color="primary">
+       <q-menu>
+        <q-card>
+          <q-card-section>
+            <q-select
+              :label="setHoursInputLabel"
+              filled
+              v-model="hoursCopy"
+              use-input
+              use-chips
+              multiple
+              hide-dropdown-icon
+              input-debounce="0"
+              new-value-mode="add"
+              style="width: 250px"
+              class="q-ml-sm"
+          />
+          </q-card-section>
+          <q-card-actions class="row justify-end">
+            <q-btn :label="cancelLabel" flat v-close-popup/>
+            <q-btn :label="saveLabel" flat v-close-popup @click="$emit('setHours', hoursCopy )"/>
+          </q-card-actions>
+        </q-card>
+       </q-menu>
       </q-btn>
+
     </template>    
 
     <template v-slot:header="props">
@@ -203,6 +229,16 @@ import moment from "moment";
 
 export default {
   props: {
+    setHoursBtnLabel:{
+      type: String,
+      required: false,
+      default: "Órák beállítása"
+    },
+    setHoursInputLabel: {
+      type: String,
+      required: false,
+      default: "Órák"
+    },
     quantityInputLabel:{
       type: String,
       required: false,
@@ -378,6 +414,7 @@ export default {
         sun: 6
       },
       intervalCopy: this.interval,
+      hoursCopy: this.hours,
       quantityToSet: null,
       defQuantityToSet: null,
       selectedDate: true,
