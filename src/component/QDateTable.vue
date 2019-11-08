@@ -275,6 +275,8 @@ export default {
         values.forEach(value => {
           if (isNaN(value) || value < 0) return false;
         });
+        if(values.length !== 2) return false;
+        if(values[0] > values[1]) return false;
         return true;
       }
     },
@@ -466,9 +468,9 @@ export default {
         ) {
           const match = copy.find(
             el =>
-              moment(el.time.dateFrom).format("HH:mm") ===
+              el.time.dateFrom ===
                 moment(date.dateFrom).format("HH:mm") &&
-              moment(el.time.dateTo).format("HH:mm") ===
+              el.time.dateTo ===
                 moment(date.dateTo).format("HH:mm")
           );
           const day = moment(date.dateFrom)
@@ -561,19 +563,22 @@ export default {
   },
   methods: {
     init() {
-      const date = moment(new Date()).format("YYYY/MM");
+      let date = moment("0:00", "HH:mm").add(this.hours[0], "hours");
+      const runTo = moment("0:00", "HH:mm").add(this.hours[1], "hours");
       const data = [];
-      for (let i = 0; i < this.hours.length; i++) {
-        const dateFrom = moment(date).add(this.hours[i], "hours");
-        const dateTo = moment(date)
-          .add(this.hours[i], "hours")
-          .add(this.interval, "minutes");
+      const interval = this.interval;
+      
+
+      while(moment(date, "HH:mm").add(interval,"minutes").isSameOrBefore(runTo)){
+        const dateFrom = moment(date, "HH:mm").format("HH:mm"); 
+        const dateTo = moment(date, "HH:mm").add(interval,"minutes").format("HH:mm");
+        date = dateTo; 
 
         data.push({
           time: {
-            label: `${moment(dateFrom).utc().format("HH:mm")} - ${moment(dateTo).utc().format("HH:mm")}`,
-            dateFrom: dateFrom.toISOString(),
-            dateTo: dateTo.toISOString()
+            label: `${dateFrom} - ${dateTo}`,
+            dateFrom,
+            dateTo
           },
           mon: false,
           tue: false,
@@ -583,27 +588,8 @@ export default {
           sat: false,
           sun: false
         });
-
-        if (this.interval < 60) {
-          data.push({
-            time: {
-              label: `${moment(dateTo).utc().format("HH:mm")} - ${moment(dateFrom)
-                .utc()
-                .add(1, "hours")
-                .format("HH:mm")}`,
-              dateFrom: moment(dateTo).toISOString(),
-              dateTo: moment(dateFrom).add(1, "hours").toISOString()
-            },
-            mon: false,
-            tue: false,
-            wed: false,
-            thu: false,
-            fri: false,
-            sat: false,
-            sun: false
-          });
-        }
       }
+
       this.dataCopy = JSON.parse(JSON.stringify(data));
 
     },

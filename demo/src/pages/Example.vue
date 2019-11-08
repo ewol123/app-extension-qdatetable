@@ -17,7 +17,7 @@
 
     <q-datetable
       :interval="interval"
-      :hours="[8, 9, 10, 11, 12, 13, 14, 15, 16]"
+      :hours="[8, 16]"
       :active-dates="activeDates"
       :items-in-order="100"
       dense

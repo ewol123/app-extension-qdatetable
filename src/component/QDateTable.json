@@ -10,12 +10,12 @@
         },
         "hours": {
             "type": "Array",
-            "desc": "Displayed hour options you want to appear in the table, on the leftmost side under time column.",
+            "desc": "Displayed hours in the leftmost column. specify two numbers indicating the range to construct times. The second number should be higher",
             "examples": [
-                [8, 9,10,11,12,13,14,15,16]
+                [8, 16]
             ]
         },
-        "intervals": {
+        "interval": {
             "type": "Number",
             "desc": "Time intervals the hours should be constructed with. 30 means every half an hour.",
             "examples": [
