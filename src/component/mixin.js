@@ -155,6 +155,7 @@ export default {
       selected: [],
       data: [],
       dataCopy: [],
+      columnsCopy: [],
       columns: [
         {
           name: "time",
@@ -236,12 +237,12 @@ export default {
   methods: {
     init() {
       //init columns
-      this.columns = this.columns.filter(
+      this.columnsCopy = this.columns.filter(
         column =>
-          this.days.includes(moment(column.name, "ddd").isoWeekday()) ||
+          this.days.includes(this.daysMap[column.name] + 2) ||
           column.name === "time"
       );
-
+     
       //init
       let date = moment("0:00", "HH:mm").add(this.hours[0], "hours");
       const runTo = moment("0:00", "HH:mm").add(this.hours[1], "hours");

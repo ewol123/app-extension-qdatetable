@@ -7,7 +7,7 @@
     :table-class="tableClass"
     :title="`${title} (${currentWeek.startOfWeek} - ${currentWeek.endOfWeek})`"
     :data="possibleArrivalDates"
-    :columns="columns"
+    :columns="columnsCopy"
     :table-style="`max-height: ${tableHeight}px`"
     :pagination.sync="pagination"
     :rows-per-page-options="[0]"

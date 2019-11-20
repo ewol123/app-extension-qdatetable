@@ -7,7 +7,7 @@
     :table-class="tableClass"
     :title="`${title} (${currentWeek.startOfWeek} - ${currentWeek.endOfWeek})`"
     :data="possibleArrivalDates"
-    :columns="columns"
+    :columns="columnsCopy"
     :table-style="`max-height: ${tableHeight}px`"
     :pagination.sync="pagination"
     :rows-per-page-options="[0]"
@@ -21,9 +21,9 @@
       >
       <q-btn
         :label="defQuantityBtnLabel"
-        icon="fas fa-boxes"
         class="q-ml-sm"
         color="primary"
+        dense
       >
         <q-menu>
           <q-card>
@@ -46,7 +46,7 @@
           </q-card>
         </q-menu>
       </q-btn>
-      <q-btn :label="setHoursBtnLabel" class="q-ml-sm" color="primary">
+      <q-btn :label="setHoursBtnLabel" class="q-ml-sm" color="primary" dense>
         <q-menu>
           <q-card>
             <q-card-section>
@@ -77,7 +77,37 @@
           </q-card>
         </q-menu>
       </q-btn>
-      <q-btn :label="setDaysBtnLabel" class="q-ml-sm" color="primary">
+       <q-btn label="órák beállítása" class="q-ml-sm" color="primary" dense>
+        <q-menu>
+          <q-card>
+            <q-card-section>
+              <q-select
+                label="vissszadott dátumok órái"
+                filled
+                use-chips
+                use-input
+                v-model="possHoursCopy"
+                multiple
+                type="number"
+                input-debounce="0"
+                new-value-mode="add"
+                style="width: 250px"
+                class="q-ml-sm"
+              />
+            </q-card-section>
+            <q-card-actions class="row justify-end">
+              <q-btn :label="cancelLabel" flat v-close-popup />
+              <q-btn
+                :label="saveLabel"
+                flat
+                v-close-popup
+                @click="$emit('setPossHours', possHoursCopy)"
+              />
+            </q-card-actions>
+          </q-card>
+        </q-menu>
+      </q-btn>
+      <q-btn :label="setDaysBtnLabel" class="q-ml-sm" color="primary" dense>
         <q-menu>
           <q-card>
             <q-card-section>
@@ -105,22 +135,22 @@
           </q-card>
         </q-menu>
       </q-btn>
-      <q-btn :label="setMinTimeBtnLabel" class="q-ml-sm" color="primary">
+      <q-btn :label="setMinTimeBtnLabel" class="q-ml-sm" color="primary" dense>
         <q-menu>
           <q-card>
             <q-card-section>
               <q-input
-                v-model.number="minTimeCopy.d"
+                v-model.number="minTimeCopy.days"
                 type="number"
                 :label="timeD"
               ></q-input>
               <q-input
-                v-model.number="minTimeCopy.h"
+                v-model.number="minTimeCopy.hours"
                 type="number"
                 :label="timeH"
               ></q-input>
               <q-input
-                v-model.number="minTimeCopy.m"
+                v-model.number="minTimeCopy.minutes"
                 type="number"
                 :label="timeM"
               ></q-input>
@@ -137,22 +167,22 @@
           </q-card>
         </q-menu>
       </q-btn>
-      <q-btn :label="setMaxTimeBtnLabel" class="q-ml-sm" color="primary">
+      <q-btn :label="setMaxTimeBtnLabel" class="q-ml-sm" color="primary" dense>
         <q-menu>
           <q-card>
             <q-card-section>
               <q-input
-                v-model.number="maxTimeCopy.d"
+                v-model.number="maxTimeCopy.days"
                 type="number"
                 :label="timeD"
               ></q-input>
               <q-input
-                v-model.number="maxTimeCopy.h"
+                v-model.number="maxTimeCopy.hours"
                 type="number"
                 :label="timeH"
               ></q-input>
               <q-input
-                v-model.number="maxTimeCopy.m"
+                v-model.number="maxTimeCopy.minutes"
                 type="number"
                 :label="timeM"
               ></q-input>
@@ -344,6 +374,14 @@ export default {
   name: "QDateTableEdit",
   mixins: [mixin],
   props: {
+    draftQuantities: {
+      type: Array,
+      default: () => []
+    },
+    possibleHours: {
+      type: Array,
+      default: () => []
+    },
     timeD: {
       type: String,
       required: false,
@@ -382,7 +420,7 @@ export default {
     setHoursBtnLabel: {
       type: String,
       required: false,
-      default: "Órák beállítása"
+      default: "megj. órák beállítása"
     },
     setHoursInputLabel: {
       type: String,
@@ -434,14 +472,15 @@ export default {
       intervalCopy: this.interval,
       quantityToSet: null,
       defQuantityToSet: this.defQuantity,
+      possHoursCopy: this.possibleHours,
       daysOptions: [
-        { label: "Hétfő", value: 1 },
-        { label: "Kedd", value: 2 },
-        { label: "Szerda", value: 3 },
-        { label: "Csütörtök", value: 4 },
-        { label: "Péntek", value: 5 },
-        { label: "Szombat", value: 6 },
-        { label: "Vasárnap", value: 7 }
+        { label: "Hétfő", value: 2 },
+        { label: "Kedd", value: 3 },
+        { label: "Szerda", value: 4 },
+        { label: "Csütörtök", value: 5 },
+        { label: "Péntek", value: 6 },
+        { label: "Szombat", value: 7 },
+        { label: "Vasárnap", value: 1 }
       ],
       minTimeCopy: this.minTime,
       maxTimeCopy: this.maxTime
@@ -493,9 +532,9 @@ export default {
         copy.forEach(el => {
           Object.keys(el).forEach(key => {
             if (el[key] === false) {
-              const isoDay = moment(key, "ddd").isoWeekday() - 1;
+              
               let date = moment(this.currentWeek.startOfWeek)
-                .add(isoDay, "days")
+                .add(this.daysMap[key], "days")
                 .format("YYYY/MM/DD");
               date = date.concat(` ${el.time.dateFrom}`);
 
@@ -507,10 +546,13 @@ export default {
                   dateTo: moment(date, "YYYY/MM/DD HH:mm")
                     .add(this.interval, "minutes")
                     .toISOString(),
-                  maxItems: 1000,
+                  maxItems: this.defQuantity,
                   currentItems: 0
                 }
               };
+              const hasDraftMax = this.draftQuantities.find(date => date.dateFrom === el[key].time.dateFrom && date.dateTo === el[key].time.dateTo);
+              if(hasDraftMax) el[key].time.maxItems = hasDraftMax.maxItems;
+              
             }
           });
         });
