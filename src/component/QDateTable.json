@@ -141,12 +141,6 @@
             "desc": "number of items the user has in their order",
             "default": 0
           },
-          "mode": {
-            "type": "String",
-            "desc":"mode for the table",
-            "default": "normal",
-            "values": ["normal", "edit"]
-          },
           "defQuantity": {
               "type": "Number",
               "desc": "default quantity used for items"
@@ -186,6 +180,51 @@
             "desc": "label for input inside set hours qmenu",
             "default": "Órák"
           },
+          "minTime": {
+            "type": "Object",
+            "desc": "minTime form for possible arrival dates",
+            "values": [" minTime: { d: 1, h: null, m: null }"]
+          },
+          "maxTime": {
+            "type": "Object",
+            "desc": "maxTime form for possible arrival dates",
+            "values": [" maxTime: { d: 1, h: null, m: null}"]
+          },
+          "timeD": {
+            "type": "String",
+            "desc": "Label for min - maxTime qmenu input day",
+            "default": "Nap"
+          },
+          "timeH": {
+            "type": "String",
+            "desc": "Label for min - maxTime qmenu input hour",
+            "default": "Óra"
+          },
+          "timeM": {
+            "type": "String",
+            "desc": "Label for min - maxTime qmenu input minute",
+            "default": "Perc"
+          },
+          "setMinTimeBtnLabel": {
+            "type": "String",
+            "desc": "min time button label",
+            "default": "Legkorábbi időpont"
+          },
+          "setMaxTimeBtnLabel": {
+            "type": "String",
+            "desc": "max time button label",
+            "default": "Legkésőbbi időpont"
+          },
+          "setDaysInputLabel": {
+            "type": "String",
+            "desc": "label for days input",
+            "default": "Napok..."
+          },
+          "setDaysBtnLabel": {
+            "type": "String",
+            "desc": "label for days btn",
+            "default": "Napok beállítása"
+          }
     },
     "events": {
         "selection": {
@@ -206,6 +245,23 @@
         "setQuantity": {
             "desc": "Emits when item quota on a specific day should be changed",
             "values": ["row data, quantity, shouldRemove boolean"]
-        }
+        },
+        "setHours": {
+            "desc": "Emits when changing hours in qmenu",
+            "values": ["hours interval"]
+          },
+          "setDays": {
+            "desc": "Emits when days should be changed",
+            "values": ["selected days in moment isoWeekday format"]
+          },
+          "setMinTime": {
+              "desc": "Emits when min time before arrival should be changed",
+              "values": ["minTime form"]
+
+            },
+          "setMaxTime": {
+              "desc": "Emits when max time before ararival should be changed",
+              "values": ["maxTime form"]
+            }
     }
 }
