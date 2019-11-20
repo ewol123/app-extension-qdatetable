@@ -23,11 +23,6 @@ export default {
       required: false,
       default: () => []
     },
-    itemsInOrder: {
-      type: Number,
-      required: false,
-      default: 0
-    },
     interval: {
       type: Number,
       required: true,
