@@ -1,12 +1,12 @@
 <template>
   <q-page padding>
     <h6>Default mode</h6>
-    <datetable
+    <q-datetable
       :interval="interval"
       :hours="[8, 16]"
       :active-dates="activeDates"
       @selection="selected = $event"
-    ></datetable>
+    ></q-datetable>
 
     <p class="text-weight-bold">{{ selected }}</p>
 
@@ -15,7 +15,7 @@
       >Full list of properties can be found in the documentation</span
     >
 
-    <datetable
+    <q-datetable
       :interval="interval"
       :hours="[8, 16]"
       :active-dates="activeDates"
@@ -32,11 +32,11 @@
       table-header-class="text-brown"
       lang="hu"
       @selection="selected = $event"
-    ></datetable>
+    ></q-datetable>
 
     <h6>Edit mode</h6>
 
-    <datetableedit
+    <q-datetable-edit
       lang="hu"
       :hours="hours"
       :interval="interval"
@@ -62,13 +62,7 @@
 </template>
 
 <script>
-import datetable from "../components/QDateTable";
-import datetableedit from "../components/QDateTableEdit";
 export default {
-  components: {
-    datetable,
-    datetableedit
-  },
   data() {
     return {
       interval: 30,
