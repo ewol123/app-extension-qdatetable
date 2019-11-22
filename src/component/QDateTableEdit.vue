@@ -268,7 +268,9 @@
           <div v-if="props.row[day].isEnabled">
             <span :class="itemQuantityDisplayClass"
               >{{ props.row[day].time.currentItems }} /
-              {{ props.row[day].time.maxItems }}</span
+              {{props.row[day].time.fulfilledItems}} /
+              {{ props.row[day].time.maxItems }}  
+              </span
             >
             <q-icon
               :class="rowEditIconClass"
