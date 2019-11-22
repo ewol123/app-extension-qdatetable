@@ -116,6 +116,7 @@ export default {
               .locale("en")
               .format("ddd")
               .toLowerCase();
+
             if (match) {
               const setData = { isEnabled: true, time: date };
               if (date.isAllowed) this.$set(match, day, setData);

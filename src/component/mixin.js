@@ -300,6 +300,7 @@ export default {
       if (increment) {
         this.page++;
       } else this.page--;
+      this.$emit("setPage", this.page);
     },
     itemClass(row) {
       const selectedClass = this.selectedClass;

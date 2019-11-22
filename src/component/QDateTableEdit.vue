@@ -336,14 +336,7 @@
           size="md"
           @click="setPage(false)"
         ></q-btn>
-        <q-chip
-          v-if="selected.length && $q.screen.gt.xs"
-          v-model="selectedDate"
-          :label="formatLabel()"
-          :style="selectedChipStyle"
-          :class="selectedChipClass"
-          removable
-        />
+        <q-btn icon="refresh" flat round @click="$emit('refresh')"></q-btn>
         <q-btn
           :disable="!hasNextWeek"
           :label="`${$q.screen.lt.sm ? '' : nextWeekLabel}`"
@@ -523,40 +516,12 @@ export default {
               .toLowerCase();
 
             if (match) {
-              const setData = { isEnabled: true, time: date };
+              const setData = { isEnabled: true, time: date, isDraft: date.isDraft };
               this.$set(match, day, setData);
+              
             }
           }
         });
-        //not found but editable "draft" cellls
-        copy.forEach(el => {
-          Object.keys(el).forEach(key => {
-            if (el[key] === false) {
-              
-              let date = moment(this.currentWeek.startOfWeek)
-                .add(this.daysMap[key], "days")
-                .format("YYYY/MM/DD");
-              date = date.concat(` ${el.time.dateFrom}`);
-
-              el[key] = {
-                isEnabled: true,
-                isDraft: true,
-                time: {
-                  dateFrom: moment(date, "YYYY/MM/DD HH:mm").toISOString(),
-                  dateTo: moment(date, "YYYY/MM/DD HH:mm")
-                    .add(this.interval, "minutes")
-                    .toISOString(),
-                  maxItems: this.defQuantity,
-                  currentItems: 0
-                }
-              };
-              const hasDraftMax = this.draftQuantities.find(date => date.dateFrom === el[key].time.dateFrom && date.dateTo === el[key].time.dateTo);
-              if(hasDraftMax) el[key].time.maxItems = hasDraftMax.maxItems;
-              
-            }
-          });
-        });
-
         return copy;
       } else return [];
     },
