@@ -130,13 +130,12 @@ export default {
       let startOfWeek;
       let endOfWeek;
       let dates = this.activeDates.map(date => moment(date.dateFrom));
-      const firstDate = moment.min(dates);
 
-      startOfWeek = firstDate
+      startOfWeek = moment.min(dates)
         .startOf("isoWeek")
         .add(this.page, "week")
         .format("YYYY/MM/DD");
-      endOfWeek = firstDate
+      endOfWeek = moment.min(dates)
         .endOf("isoWeek")
         .add(this.page, "week")
         .format("YYYY/MM/DD");
