@@ -1,28 +1,14 @@
-QDateTable
-===
+<img src="https://img.shields.io/npm/v/quasar-ui-date-interval-table.svg?label=quasar-ui-date-interval-table">
+<img src="https://img.shields.io/npm/v/quasar-app-extension-date-interval-table.svg?label=quasar-app-extension-date-interval-table">
 
-QDateTable is an `UI App Extension` for [Quasar Framework v1](https://quasar.dev/). It will not work with legacy versions of Quasar Framework.
+Compatible with Quasar UI v2 and Vue 3.
 
-# QDateTable
-Please check out the [documentation](https://qdatetable.now.sh).
+# Structure
+* [/ui](ui) - standalone npm package
+* [/app-extension](app-extension) - Quasar app extension
 
-# Install
-To add this App Extension to your Quasar application, run the following (in your Quasar app folder):
-```
-quasar ext add qdatetable
-```
+# Donate
+If you appreciate the work that went into this project, please consider [donating to Quasar](https://donate.quasar.dev).
 
-# Uninstall
-To remove this App Extension from your Quasar application, run the following (in your Quasar app folder):
-```
-quasar ext remove qdatetable
-```
-
-# Describe
-You can use `quasar describe QDateTable` 
-
-# Demo Project (source)
-Can be found [here](https://github.com/ewol123/app-extension-qdatetable/tree/master/demo).
-
-# Documentation and Examples
-Can be found [here](https://qdatetable.now.sh).
+# License
+MIT (c) Peti <gyulavari.peter@angro.hu>

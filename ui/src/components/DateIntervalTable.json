@@ -1,0 +1,272 @@
+{
+    "type": "component",
+    "props": {
+        "strategy": {
+          "type": "String",
+          "desc": "The type of table you want to use.",
+          "values": ["NORMAL", "EDIT"]
+        },
+        "activeDates": {
+            "type": "Array",
+            "desc": "Active date options you want to be selectable. Must be an array of objects with the following structure",
+            "examples": [
+                ["{dateFrom:2019-10-22T08:00:00.000Z, dateTo: 2019-10-22T08:30:00.000Z}"]
+            ]
+        },
+        "hours": {
+            "type": "Array",
+            "desc": "Displayed hours in the leftmost column. specify two numbers indicating the range to construct times. The second number should be higher",
+            "examples": [
+                [8, 16]
+            ]
+        },
+        "interval": {
+            "type": "Number",
+            "desc": "Time intervals the hours should be constructed with. 30 means every half an hour.",
+            "examples": [
+                30
+            ]
+        },
+        "title": {
+            "type": "String",
+            "desc": "Title of the table",
+            "default": "Allowed Dates"
+        },
+        "color": {
+            "type": "String",
+            "desc": "Qtable color property",
+            "default": ""
+        },
+        "cardClass": {
+            "type": "String",
+            "desc": "QTable card class",
+            "default": ""
+        },
+        "tableClass": {
+            "type": "String",
+            "desc": "QTable table-class",
+            "default": ""
+        },
+        "tableHeaderClass": {
+            "type": "String",
+            "desc": "Qtable table-header-class",
+            "default": ""
+        },
+        "lang": {
+            "type": "String",
+            "desc": "default displayed language for days and header, any values accepted by moment.js should work",
+            "values": ["hu,en,fr,de, etc."],
+            "default": "en"
+        },
+        "activeClass": {
+            "type": "String",
+            "desc": "class for active date cells",
+            "default": "bg-green"
+        },
+        "selectedClass": {
+            "type": "String",
+            "desc": "class for selected date cell",
+            "default": "cursor-pointer bg-green-8"
+        },
+        "disabledClass": {
+            "type": "String",
+            "desc": "class for displayed but inactive date cells",
+            "default": "bg-grey-4"
+        },
+        "tableHeight": {
+            "type": "Number",
+            "desc": "the height of the table",
+            "default": 400
+        },
+        "timeStyle": {
+            "type": "String",
+            "desc": "Style for the leftmost hours cells",
+            "default": "background-color: #00b9de"
+        },
+        "timeClass": {
+            "type": "String",
+            "desc": "Class for the leftmost hours cells",
+            "default": "text-weight-bold text-white"
+        },
+        "selectedChipStyle": {
+            "type": "String",
+            "desc": "Selected date chip style",
+            "default": "background-color: #00b9de"
+        },
+        "selectedChipClass": {
+            "type": "String",
+            "desc": "Selected date chip class",
+            "default": "text-weight-bold text-white"
+        },
+        "prevWeekLabel": {
+            "type": "String",
+            "desc": "Previous week button label",
+            "default": "Previous week"
+        },
+        "nextWeekLabel": {
+            "type": "String",
+            "desc": "Next week button label",
+            "default": "Next week"
+        },
+        "dense": {
+            "type": "Boolean",
+            "desc": "Qtable dense mode",
+            "default": false
+        },
+        "separator": {
+            "type": "String",
+            "desc": "separator mode for QTable",
+            "values": ["vertical", "horizontal", "cell", "none"],
+            "default": "cell"
+        },
+        "itemQuantityDisplayClass": {
+            "type": "String",
+            "desc": "class for the quantity display inside cells",
+            "default": "text-weight-bold"
+          },
+          "rowEditBtnColor": {
+            "type": "String",
+            "desc": "color for the quantity edit button",
+            "default": "white"
+          },
+          "rowEditIconClass": {
+            "type": "String",
+            "desc": "class for the small icon near the quantities",
+            "default": ""
+          },
+          "exceptions": {
+            "type": "Array",
+            "desc": "array of dates to disable a whole day",
+            "default": [],
+            "examples": ["2019/10/21"],
+            "values": "any valid date format should work, must contain YYYY MM DD"
+          },
+          "itemsInOrder": {
+            "type": "Number",
+            "desc": "number of items the user has in their order",
+            "default": 0
+          },
+          "defQuantity": {
+              "type": "Number",
+              "desc": "default quantity used for items"
+          },
+          "saveLabel": {
+            "type": "String",
+            "desc": "Label for save buttons",
+            "default": "Mentés"
+          },
+          "cancelLabel": {
+            "type": "String",
+            "desc": "Label for cancel buttons",
+            "default": "Mégse"
+          },
+          "defQuantityBtnLabel":{
+            "type": "String",
+            "desc": "label for set default quantity button",
+            "default": "alapért. mennyiség"
+          },
+          "defQuantityInputLabel":{
+            "type": "String",
+            "desc":"label for default quantity menu input",
+            "default": "mennyiség"
+          },
+          "quantityInputLabel":{
+            "type": "String",
+            "desc": "label for quantity menu input",
+            "default": "Új mennyiség"
+          },
+          "setHoursBtnLabel":{
+            "type": "String",
+            "desc": "label for set hours button",
+            "default": "Órák beállítása"
+          },
+          "setHoursInputLabel": {
+            "type": "String",
+            "desc": "label for input inside set hours qmenu",
+            "default": "Órák"
+          },
+          "minTime": {
+            "type": "Object",
+            "desc": "minTime form for possible arrival dates",
+            "values": [" minTime: { d: 1, h: null, m: null }"]
+          },
+          "maxTime": {
+            "type": "Object",
+            "desc": "maxTime form for possible arrival dates",
+            "values": [" maxTime: { d: 1, h: null, m: null}"]
+          },
+          "timeD": {
+            "type": "String",
+            "desc": "Label for min - maxTime qmenu input day",
+            "default": "Nap"
+          },
+          "timeH": {
+            "type": "String",
+            "desc": "Label for min - maxTime qmenu input hour",
+            "default": "Óra"
+          },
+          "timeM": {
+            "type": "String",
+            "desc": "Label for min - maxTime qmenu input minute",
+            "default": "Perc"
+          },
+          "setMinTimeBtnLabel": {
+            "type": "String",
+            "desc": "min time button label",
+            "default": "Legkorábbi időpont"
+          },
+          "setMaxTimeBtnLabel": {
+            "type": "String",
+            "desc": "max time button label",
+            "default": "Legkésőbbi időpont"
+          },
+          "setDaysInputLabel": {
+            "type": "String",
+            "desc": "label for days input",
+            "default": "Napok..."
+          },
+          "setDaysBtnLabel": {
+            "type": "String",
+            "desc": "label for days btn",
+            "default": "Napok beállítása"
+          }
+    },
+    "events": {
+        "selection": {
+            "desc": "Emits the selected value"
+        },
+        "setDefQuantity":{
+            "desc": "Emits when default quantity should be set for that day's item quota",
+            "values": ["the quantity to set"]
+        },
+        "setDayException":{
+            "desc":"Emits when day should be enabled/disabled",
+            "values": ["Boolean value and the date clicked on"]
+        },
+        "setInterval": {
+            "desc": "Emits when interval should be changed",
+            "values": ["new interval value as number"]
+        },
+        "setQuantity": {
+            "desc": "Emits when item quota on a specific day should be changed",
+            "values": ["row data, quantity, shouldRemove boolean"]
+        },
+        "setHours": {
+            "desc": "Emits when changing hours in qmenu",
+            "values": ["hours interval"]
+          },
+          "setDays": {
+            "desc": "Emits when days should be changed",
+            "values": ["selected days in moment isoWeekday format"]
+          },
+          "setMinTime": {
+              "desc": "Emits when min time before arrival should be changed",
+              "values": ["minTime form"]
+
+            },
+          "setMaxTime": {
+              "desc": "Emits when max time before ararival should be changed",
+              "values": ["maxTime form"]
+            }
+    }
+}
