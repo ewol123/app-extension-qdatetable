@@ -1,6 +1,6 @@
 {
-  "name": "quasar-app-extension-date-interval-table",
-  "version": "0.0.1",
+  "name": "quasar-app-extension-qdatetable",
+  "version": "3.0.0-beta",
   "description": "date/time interval picker with editable options",
   "author": "Peti <gyulavari.peter@angro.hu>",
   "license": "MIT",
@@ -10,7 +10,7 @@
     "url": "https://github.com/ewol123/app-extension-qdatetable"
   },
   "bugs": "https://github.com/ewol123/app-extension-qdatetable/issues",
-  "homepage": "",
+  "homepage": "https://github.com/ewol123/app-extension-qdatetable",
   "dependencies": {
     "quasar-ui-date-interval-table": "latest"
   },

@@ -1,33 +1,28 @@
-# Quasar App Extension date-interval-table
+QDateTable
+===
 
-> Add a short description of your App Extension. What does it do? How is it beneficial? Why would someone want to use it?
+QDateTable is an `UI App Extension` for [Quasar Framework v1](https://quasar.dev/). It will not work with legacy versions of Quasar Framework.
 
-[![npm](https://img.shields.io/npm/v/quasar-app-extension-date-interval-table.svg?label=quasar-app-extension-date-interval-table)](https://www.npmjs.com/package/quasar-app-extension-date-interval-table)
-[![npm](https://img.shields.io/npm/dt/quasar-app-extension-date-interval-table.svg)](https://www.npmjs.com/package/quasar-app-extension-date-interval-table)
+# QDateTable
+Please check out the [documentation](https://qdatetable.now.sh).
 
 # Install
-```bash
-quasar ext add date-interval-table
+To add this App Extension to your Quasar application, run the following (in your Quasar app folder):
 ```
-Quasar CLI will retrieve it from NPM and install the extension.
-
-## Prompts
-
-> If your app extension uses prompts, explain them here, otherwise remove this section and remove prompts.js file.
+quasar ext add qdatetable
+```
 
 # Uninstall
-```bash
-quasar ext remove date-interval-table
+To remove this App Extension from your Quasar application, run the following (in your Quasar app folder):
+```
+quasar ext remove qdatetable
 ```
 
-# Info
-> Add longer information here that will help the user of your app extension.
+# Describe
+You can use `quasar describe QDateTable` 
 
-# Other Info
-> Add other information that's not as important to know
+# Demo Project (source)
+Can be found [here](https://github.com/ewol123/app-extension-qdatetable/tree/master/demo).
 
-# Donate
-If you appreciate the work that went into this App Extension, please consider [donating to Quasar](https://donate.quasar.dev).
-
-# License
-MIT (c) Peti <gyulavari.peter@angro.hu>
+# Documentation and Examples
+Can be found [here](https://qdatetable.now.sh).

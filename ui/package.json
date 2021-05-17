@@ -1,5 +1,5 @@
 {
-  "name": "quasar-ui-date-interval-table",
+  "name": "quasar-ui-qdatetable",
   "version": "0.0.1",
   "author": "Peti <gyulavari.peter@angro.hu>",
   "description": "date/time interval picker with editable options",
